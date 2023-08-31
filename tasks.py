@@ -1,16 +1,11 @@
 import asyncio
 import os
-import traceback
-from datetime import datetime, timedelta
 
-import pymongo
 from celery import Celery
 from celery.utils.log import get_task_logger
-from celery.schedules import crontab
 from playwright.async_api import async_playwright
 
-from database import get_model
-from scraper.product import product_route
+from scraper.product import get_one_expired_product_url_and_update
 
 app = Celery('tasks', broker=os.getenv("CELERY_BROKER_URL"))
 logger = get_task_logger(__name__)
@@ -36,42 +31,21 @@ def setup_periodic_tasks(sender, **kwargs):
     #     test.s('Happy Mondays!'),
     # )
 
+
 @app.task
 def schedule_url_batch(arg):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(schedule_url_batch_async(arg))
 
+
 async def schedule_url_batch_async(arg):
-    product_urls_model = get_model("product_urls")
-    cursor = product_urls_model.find({}, sort=[("next_update", pymongo.ASCENDING)], limit=5)
+    # todo: count before starting
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        playwright_context = await browser.new_context()
+        for i in range(1, 10):
+            print('schedule_url_batch_async', i)
+            await get_one_expired_product_url_and_update(playwright_context)
 
-    batch = []
-    for doc in cursor:
-        batch.append(doc)
-
-    query_by_ids = {'_id': {'$in': list(map(lambda x: x['_id'], batch))}}
-    try:
-        if len(batch) > 0:
-            product_urls_model.update_many(query_by_ids,
-                                           {'$set': {
-                                               'next_update': datetime.now() + timedelta(hours=47)
-                                           }},
-                                           upsert=False)
-        async with async_playwright() as playwright:
-            browser = await playwright.chromium.launch(headless=True)
-            playwright_context = await browser.new_context()
-            for request in batch:
-                url = request['url']
-                user_data = {"hash": request['hash']}
-                print(f'Scraping {url} ...')
-                print(request)
-                await product_route(url, user_data, playwright_context)
-    except Exception as e:
-        traceback.print_exc()
-        product_urls_model.update_many(query_by_ids,
-                                       {'$set': {
-                                           'next_update': datetime.now() + timedelta(hours=1)
-                                       }},
-                                       upsert=False)
 
 schedule_url_batch.delay('ZenRows')
