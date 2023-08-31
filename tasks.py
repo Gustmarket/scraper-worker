@@ -4,7 +4,6 @@ import traceback
 from datetime import datetime, timedelta
 
 import pymongo
-from dotenv import load_dotenv
 from celery import Celery
 from celery.utils.log import get_task_logger
 from celery.schedules import crontab
@@ -13,8 +12,6 @@ from playwright.async_api import async_playwright
 from database import get_model
 from scraper.product import product_route
 
-load_dotenv()
-print(os.getenv("CELERY_BROKER_URL"))
 app = Celery('tasks', broker=os.getenv("CELERY_BROKER_URL"))
 logger = get_task_logger(__name__)
 
