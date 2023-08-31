@@ -12,12 +12,12 @@ services:
           name: celery-redis
           type: redis
           property: connectionString
-  - type: web
-    name: app
+  - type: worker
+    name: beat
     region: ohio
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    startCommand: "celery --app tasks beat --loglevel info"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
