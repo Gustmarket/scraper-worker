@@ -28,27 +28,13 @@ app.conf.timezone = 'UTC'
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     print('setup_periodic_tasks')
-    # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(120.0, schedule_url_batch.s('hello'), name='add every 10')
+    sender.add_periodic_task(120.0, schedule_url_batch.s('hello'), name='schedule_url_batch every 120s')
 
-    # Calls test('hello') every 30 seconds.
-    # It uses the same signature of previous task, an explicit name is
-    # defined to avoid this task replacing the previous one defined.
-    sender.add_periodic_task(30.0, test.s('hello'), name='add every 30')
-
-    # Calls test('world') every 30 seconds
-    sender.add_periodic_task(30.0, test.s('world'), expires=10)
-
-    # Executes every Monday morning at 7:30 a.m.
-    sender.add_periodic_task(
-        crontab(hour=7, minute=30, day_of_week=1),
-        test.s('Happy Mondays!'),
-    )
-
-
-@app.task
-def test(arg):
-    print(arg)
+    # # Executes every Monday morning at 7:30 a.m.
+    # sender.add_periodic_task(
+    #     crontab(hour=7, minute=30, day_of_week=1),
+    #     test.s('Happy Mondays!'),
+    # )
 
 @app.task
 def schedule_url_batch(arg):
@@ -88,8 +74,4 @@ async def schedule_url_batch_async(arg):
                                        }},
                                        upsert=False)
 
-
-@app.task
-def add(x, y):
-    logger.info(f'Adding {x} + {y}')
-    return x + y
+schedule_url_batch.delay('ZenRows')
