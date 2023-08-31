@@ -1,2 +1,3 @@
 #!/bin/sh
-export CELERY_BROKER_URL="redis://@localhost:6379" && celery -A tasks worker --loglevel=info
+
+source .env && celery --app tasks worker --loglevel=info

@@ -2,10 +2,8 @@ import os
 
 from pymongo import MongoClient, operations
 
-# client = MongoClient(os.getenv("DB_URL"))
-# db_name = os.getenv("DB_NAME")
-client = MongoClient("mongodb+srv://victorbalan:bG4WJtcxYJBMXFrD@gustmarket-cluster.eu50bsg.mongodb.net/")
-db_name = "gustmarket_dev"
+client = MongoClient(os.getenv("DB_URL"))
+db_name = os.getenv("DB_NAME")
 db = client[db_name]
 
 
