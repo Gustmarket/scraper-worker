@@ -6,6 +6,8 @@ from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 from playwright.async_api import async_playwright
 
+from processing.raw_items_processor import process_raw_items, normalize_pre_processed_items, \
+    upsert_products_from_normalized_items, upsert_product_offers
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
 
@@ -37,12 +39,37 @@ def setup_periodic_tasks(sender, **kwargs):
 def schedule_url_batch():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(schedule_url_batch_async())
+    process_raw_items_task.delay()
 
 
 @app.task
 def schedule_crawlable_entity():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(schedule_crawlable_entity_async())
+    process_raw_items_task.delay()
+
+
+@app.task
+def process_raw_items_task():
+    process_raw_items()
+    normalize_pre_processed_items_task.delay()
+
+
+@app.task
+def normalize_pre_processed_items_task():
+    normalize_pre_processed_items()
+    upsert_products_from_normalized_items_task.delay()
+    upsert_product_offers_task.delay()
+
+
+@app.task
+def upsert_products_from_normalized_items_task():
+    upsert_products_from_normalized_items()
+
+
+@app.task
+def upsert_product_offers_task():
+    upsert_product_offers()
 
 
 async def schedule_crawlable_entity_async():
@@ -61,4 +88,3 @@ async def schedule_url_batch_async():
         for i in range(1, 10):
             print('schedule_url_batch_async', i)
             await get_one_expired_product_url_and_update(playwright_context)
-
