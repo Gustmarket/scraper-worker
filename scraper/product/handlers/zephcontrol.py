@@ -1,6 +1,6 @@
 import traceback
 
-async def zephcontrol(url, user_data, playwright_context):
+async def zephcontrol(url, playwright_context):
     page = None
     try:
         page = await playwright_context.new_page()

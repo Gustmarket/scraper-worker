@@ -1,7 +1,7 @@
 import traceback
 
 
-async def kitemana(url, user_data, playwright_context):
+async def kitemana(url, playwright_context):
     page = None
     try:
         page = await playwright_context.new_page()

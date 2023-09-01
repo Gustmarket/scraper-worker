@@ -1,4 +1,3 @@
-import hashlib
 import traceback
 from datetime import datetime, timedelta
 
@@ -30,11 +29,11 @@ product_route_handlers = {
 }
 
 
-async def product_route(product_url, playwright_context):
+async def scrape_and_save_product(product_url, playwright_context):
     url = product_url['url']
-    user_data = {"hash": product_url['hash']}
+    url_hash = product_url['hash']
     print(f'Scraping {url} ...')
-    if user_data is None or user_data.get('hash') is None:
+    if url_hash is None:
         print('no hash present on product')
         return
     source = get_main_domain(url)
@@ -42,39 +41,25 @@ async def product_route(product_url, playwright_context):
     if domain_handler is None:
         print('no domain handler for', source)
         return
-    url_hash = user_data.get('hash')
-    result = None
-    try:
-        data = await domain_handler(url=url, user_data=user_data, playwright_context=playwright_context)
-        if data is None:
-            result = {
-                'source': source,
-                'hash': url_hash,
-                'url': url,
-                'loaded_url': url,
-                'type': "OUT_OF_STOCK"}
-        else:
-            (product, product_type) = data
-            result = {
-                'source': source,
-                'hash': url_hash,
-                'url': url,
-                'loaded_url': url,
-                'item': product,
-                'type': product_type}
-    except Exception as e:
-        traceback.print_exc()
+
+    data = await domain_handler(url=url, playwright_context=playwright_context)
+    if data is None:
         result = {
-            'source': source,
-            'hash': url_hash,
-            'url': url,
-            'loaded_url': url,
-            'error': str(e),
-            'type': "ERROR"}
-    finally:
-        if result.get('hash') is None:
-            result['hash'] = hashlib.sha256(url.encode("UTF-8")).hexdigest()
-        database.get_model('raw_items').update_one({'hash': result['hash']}, {'$set': result}, upsert=True)
+            'type': "OUT_OF_STOCK"
+        }
+    else:
+        (product, product_type) = data
+        result = {
+            'item': product,
+            'type': product_type
+        }
+    database.get_model('raw_items').update_one({'hash': url_hash}, {'$set': {
+        'source': source,
+        'hash': url_hash,
+        'url': url,
+        'loaded_url': url,
+        **result
+    }}, upsert=True)
 
 
 async def get_one_expired_product_url_and_update(playwright_context):
@@ -97,11 +82,13 @@ async def get_one_expired_product_url_and_update(playwright_context):
         return None
 
     try:
-        await product_route(product_url, playwright_context)
+        await scrape_and_save_product(product_url, playwright_context)
     except Exception as e:
         traceback.print_exc()
         product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
+                                          'last_error': str(e),
+                                          'last_error_date': datetime.now(),
                                           'next_update': datetime.now() + timedelta(hours=1)
                                       }},
                                       upsert=False)

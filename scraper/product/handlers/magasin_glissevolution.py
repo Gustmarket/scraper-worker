@@ -18,10 +18,9 @@ async def get_product_node_content(page):
                         return col.outerHTML;
                     }''')
 
-async def magasin_glissevolution(url, user_data, playwright_context):
+async def magasin_glissevolution(url, playwright_context):
     return await attributes_combinations_product_scraper(
         url=url,
-        user_data=user_data,
         playwright_context=playwright_context,
         kite_size_group_key='taille',
         get_initial_url=get_initial_url,

@@ -4,7 +4,7 @@ import traceback
 from scraper.product.mapping import extract_product
 
 
-async def flysurf(url, user_data, playwright_context):
+async def flysurf(url, playwright_context):
     page = None
     try:
         page = await playwright_context.new_page()

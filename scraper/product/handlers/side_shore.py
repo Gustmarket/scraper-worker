@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from scraper.product.mapping import extract_product
 
 
-async def side_shore(url, user_data, playwright_context):
+async def side_shore(url, playwright_context):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
 

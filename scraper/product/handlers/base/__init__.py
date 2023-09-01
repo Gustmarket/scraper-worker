@@ -9,7 +9,6 @@ def combination_to_url_hash_path(combo):
 
 
 async def attributes_combinations_product_scraper(url,
-                                                  user_data,
                                                   playwright_context,
                                                   kite_size_group_key,
                                                   get_initial_url,

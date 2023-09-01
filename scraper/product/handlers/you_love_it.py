@@ -18,7 +18,7 @@ def get_size_variants(soup):
                     variant_wrapper[0].select('.variant--option > input')))
 
 
-async def you_love_it(url, user_data, playwright_context):
+async def you_love_it(url, playwright_context):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
 

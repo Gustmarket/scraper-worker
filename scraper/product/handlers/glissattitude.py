@@ -4,7 +4,7 @@ import traceback
 from scraper.product.mapping import extract_product
 
 
-async def glissattitude(url, user_data, playwright_context):
+async def glissattitude(url, playwright_context):
     page = None
 
     try:

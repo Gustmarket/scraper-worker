@@ -11,7 +11,7 @@ def generate_combinations(attribute_options):
     return list(product(*attribute_options))
 
 
-async def surfpirates(url, user_data, playwright_context):
+async def surfpirates(url, playwright_context):
     page = None
     try:
         page = await playwright_context.new_page()
