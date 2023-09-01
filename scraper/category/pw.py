@@ -19,9 +19,9 @@ def playwright_category_scraper(source, link_selector, get_next_page_url, should
             urls = list(set(urls))
             if len(urls) > 0 and not should_end(urls):
                 await push_product_urls(scraped_url=url, source=source, urls=urls, user_data=user_data)
-                await enqueue_link(get_next_page_url(url), 'category')
+                await enqueue_link(get_next_page_url(url))
             else:
-                print('no more links')
+                print(f'no more links {source}')
 
         except Exception as e:
             traceback.print_exc()

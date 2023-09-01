@@ -19,15 +19,16 @@ async def flysurf_category_scraper(url, enqueue_link, playwright_context, user_d
                 '.dp-product-view-grid .dp-product-item a')
 
             urls = list(set(urls))
+
             if len(urls) > 0:
                 await push_product_urls(scraped_url=url, source='flysurf', urls=urls, user_data=user_data)
                 next = await page.query_selector('li.page-item:not(.disabled) .page-link[title="Suivant"]')
                 if next is None:
+                    print('no more links flysurf')
                     break
-                # .page-link[title="Suivant"]
-                # await enqueue_link(get_next_page_url(url), 'category')
+                await next.click()
             else:
-                print('no more links')
+                print('no more links flysurf')
                 break
 
     except Exception as e:

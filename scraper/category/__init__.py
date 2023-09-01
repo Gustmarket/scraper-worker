@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, urljoin
 
 import pymongo
+from pymongo import ReturnDocument
 
 import database
 from scraper.category.flysurf import flysurf_category_scraper
@@ -10,7 +11,6 @@ from scraper.category.pw import playwright_category_scraper
 from scraper.category.shopify import shopify_category_scraper
 from scraper.category.soup import soup_category_scraper
 from scraper.utils import get_main_domain
-from pymongo import ReturnDocument
 
 
 def get_next_page_url_query_param(url, param_key='page'):
@@ -89,9 +89,10 @@ def surfpirates_get_next_page_url(url, soup):
     urls = []
     for link in links:
         link_href = link.get('href')
-        link_url = urljoin(url, link_href)
-        if link_url.startswith(('http://', 'https://')):
-            urls.append(link_url)
+        if link_href is not None and link_href != "":
+            link_url = urljoin(url, link_href)
+            if link_url.startswith(('http://', 'https://')):
+                urls.append(link_url)
     urls = list(set(urls))
     if len(urls) == 0:
         return None
@@ -119,6 +120,8 @@ def add_soup_next_page_query_param_handler(source, link_selector, param_key):
 def add_playwright_handler(source, link_selector, get_next_page_url, should_end=lambda x: False):
     handler = playwright_category_scraper(source, link_selector, get_next_page_url, should_end)
     category_domain_handlers[source] = handler
+
+
 def add_shopify_handler(source):
     handler = shopify_category_scraper(source)
     category_domain_handlers[source] = handler
@@ -166,13 +169,18 @@ add_playwright_handler('side-shore.com',
 async def scrape_category(url, user_data, playwright_context):
     domain_handler = category_domain_handlers.get(get_main_domain(url))
     if domain_handler is None:
-        print('no domain handler')
+        print(f'no domain handler for {url}')
         return
     if user_data is None:
         user_data = {}
+
+    print(f'scraping category: {url}')
+
     async def enqueue_link(new_url):
         await scrape_category(new_url, user_data, playwright_context)
+
     await domain_handler(url=url, user_data=user_data, enqueue_link=enqueue_link, playwright_context=playwright_context)
+
 
 async def get_one_expired_crawlable_entity_and_update(playwright_context):
     crawlable_entities_model = database.get_model("crawlable_entities")
@@ -192,7 +200,7 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
         if crawlable_entity is None:
             return
         if crawlable_entity['type'] == "gustmarket-category-scraper":
-            for config in  crawlable_entity['config']['start_urls']:
+            for config in crawlable_entity['config']['start_urls']:
                 await scrape_category(config['url'], config.get('user_data', {}), playwright_context)
         elif crawlable_entity['type'] == "facebook-group":
             # todo: probably still apify
@@ -201,9 +209,9 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
     except Exception as e:
         traceback.print_exc()
         crawlable_entities_model.update_one({'_id': crawlable_entity['_id']},
-                                      {'$set': {
-                                          'last_error': str(e),
-                                          'last_error_date': datetime.now(),
-                                          'next_update': datetime.now() + timedelta(hours=1)
-                                      }},
-                                      upsert=False)
+                                            {'$set': {
+                                                'last_error': str(e),
+                                                'last_error_date': datetime.now(),
+                                                'next_update': datetime.now() + timedelta(hours=1)
+                                            }},
+                                            upsert=False)
