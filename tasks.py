@@ -38,10 +38,12 @@ def schedule_url_batch():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(schedule_url_batch_async())
 
+
 @app.task
 def schedule_crawlable_entity():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(schedule_url_batch_async())
+
 
 async def schedule_crawlable_entity_async():
     # todo: count before starting
@@ -59,4 +61,3 @@ async def schedule_url_batch_async():
         for i in range(1, 10):
             print('schedule_url_batch_async', i)
             await get_one_expired_product_url_and_update(playwright_context)
-
