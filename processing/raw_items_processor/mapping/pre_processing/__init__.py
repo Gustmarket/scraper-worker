@@ -10,6 +10,9 @@ class PreProcessor(DataProcessor):
 
     @staticmethod
     def process_item(item):
+        if item.get('item') is None:
+            return None
+
         crawled_item_type = item['type']
 
         pre_processed = None

@@ -51,8 +51,9 @@ def schedule_crawlable_entity():
 
 @app.task
 def process_raw_items_task():
-    process_raw_items()
-    normalize_pre_processed_items_task.delay()
+    nr_of_items = process_raw_items()
+    if nr_of_items > 0:
+        normalize_pre_processed_items_task.delay()
 
 
 @app.task
@@ -88,3 +89,4 @@ async def schedule_url_batch_async():
         for i in range(1, 10):
             print('schedule_url_batch_async', i)
             await get_one_expired_product_url_and_update(playwright_context)
+

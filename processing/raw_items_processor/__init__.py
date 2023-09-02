@@ -8,7 +8,8 @@ def process_raw_items():
 
     (raw_item_ids, items) = PreProcessor.process_items(raw_items)
 
-    print('got', len(items), 'mapped items out of', len(raw_item_ids), 'items')
+    nr_of_items = len(items)
+    print('got', nr_of_items, 'mapped items out of', len(raw_item_ids), 'items')
 
     database.bulk_upsert_items(items=items, id_key='raw_item_id', model_name='pre_processed_items', upsert=True)
     database.get_model('raw_items').update_many({
@@ -20,6 +21,7 @@ def process_raw_items():
             'processed': True
         }
     })
+    return nr_of_items
 
 
 def normalize_pre_processed_items():
