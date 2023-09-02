@@ -36,7 +36,7 @@ def better_map(raw_val, key='name'):
 
     mapped_nodes = list(map(lambda n: map_microdata_node(n, key), nodes))
     flattened_nodes = flatten_list(mapped_nodes)
-    res = list(filter(lambda n: n is not None and n is not "", flattened_nodes))
+    res = list(filter(lambda n: n is not None and n != "", flattened_nodes))
     res = list(set(list(map(lambda n: cleanup_str(n), res))))
 
     if len(res) == 1:

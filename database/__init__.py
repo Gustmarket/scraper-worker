@@ -5,7 +5,6 @@ from pymongo import MongoClient, operations
 db_url = os.getenv("DB_URL", "localhost:27017")
 client = MongoClient(db_url)
 db_name = os.getenv("DB_NAME")
-print(db_name,db_url)
 db = client[db_name]
 
 

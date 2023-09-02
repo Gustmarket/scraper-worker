@@ -36,9 +36,9 @@ def guess_brand_from_string(name):
 def extract_and_cleanup_year(name):
     concat_year = next(iter(re.findall(r"[0-9]{4}/[0-9]{4}", name)), None)
     year = next(iter(re.findall(r"[0-9]{4}", name)), None)
-    if concat_year is not None and year is not "":
+    if concat_year is not None and year != "":
         name = name.replace(concat_year, '').strip()
-    elif year is not None and year is not "":
+    elif year is not None and year != "":
         name = name.replace(year, '').strip()
 
     return name, year
