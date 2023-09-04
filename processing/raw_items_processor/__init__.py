@@ -34,6 +34,7 @@ def process_raw_items():
 def normalize_pre_processed_items():
     pre_processed_items = database.get_pre_processed_items()
     (item_ids, normalized_items) = map_and_normalize_pre_processed_items(pre_processed_items)
+    logger.info(f'got {len(normalized_items)} normalized items out of {len(item_ids)} items')
 
     database.bulk_upsert_normalized_items(items=normalized_items)
     database.get_model('pre_processed_items').update_many({
@@ -108,8 +109,10 @@ def upsert_product_offers():
     })
 
     offers = []
+    item_ids = []
     for normalized_item in normalized_items:
         item = normalized_item['item']
+        item_ids.append(normalized_item['_id'])
         base_offer = {
             "normalized_item_id": normalized_item['_id'],
             "internal_sku": item['internal_sku'],
@@ -141,11 +144,12 @@ def upsert_product_offers():
         product_offers = list(map(map_offer, item['variants']))
         offers.extend(product_offers)
 
-    chunks = chunk_array(offers, 100)
+    logger.info(f'got {len(offers)} offers items out of {len(item_ids)} items')
+    chunks = chunk_array(offers, 500)
     for chunk in chunks:
         item_ids = list(map(lambda o: o['normalized_item_id'], chunk))
-        sku_source_tuples = list(map(lambda o: (o['internal_sku'], o['offer_source']), chunk))
-        database.set_out_of_stock_offers(sku_source_tuples)
+        offer_hashes = list(map(lambda o: o['offer_hash'], chunk))
+        database.set_out_of_stock_offers(offer_hashes)
         database.bulk_upsert_product_offers(chunk)
         database.get_model('normalized_items').update_many({
             '_id': {

@@ -145,18 +145,21 @@ def bulk_upsert_normalized_items(items):
             "normalization_key": item.get("normalization_key")
         },
             {
-                "$set": item
+                "$set": {
+                    **item,
+                    "offers_processed": False,
+                    "products_processed": False,
+                }
             }, upsert=True))
 
     perform_bulk_operations(bulk_operations=bulk_operations, model_name="normalized_items")
 
 
-def set_out_of_stock_offers(sku_source_tuples):
+def set_out_of_stock_offers(offer_hashes):
     get_model("product_offers").update_many({
-        '$or': list(map(lambda t: {
-            "internal_sku": t[0],
-            "offer_source": t[1],
-        }, sku_source_tuples))
+        "offer_hash": {
+            "$in": offer_hashes
+        }
     }, {
         "$set": {
             "in_stock": False
@@ -168,10 +171,10 @@ def bulk_upsert_product_offers(offers):
     bulk_operations = []
     for offer in offers:
         bulk_operations.append(operations.UpdateOne({
-            "internal_sku": offer["internal_sku"],
-            "offer_source": offer["offer_source"],
+            "offer_hash": offer["offer_hash"],
+            "condition": offer.get("condition"),
             "attributes.size": offer.get("attributes", {}).get("size"),
-            "attributes.condition": offer.get("attributes", {}).get("condition"),
+            "attributes.color": offer.get("attributes", {}).get("color"),
         },
             {
                 "$set": offer

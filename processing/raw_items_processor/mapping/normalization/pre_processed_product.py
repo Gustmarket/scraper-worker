@@ -1,15 +1,17 @@
 import re
 
+from celery.utils.log import get_task_logger
+
 from processing.raw_items_processor.mapping.normalization.models.item import NormalizedItem, \
     NormalizedItemVariant
+from processing.raw_items_processor.mapping.normalization.processing.cleanup import replace_string_word_ignore_case
 from processing.raw_items_processor.mapping.normalization.processing.processing import extract_brand_model_info, \
     extract_and_cleanup_kite_size
 from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct
 from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none
 
-
-from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
+
 
 def get_internal_sku(year, brand_slug, name):
     internal_sku = ''
@@ -62,9 +64,14 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
     name = item.name
     if name is None:
         name = ''
-    #todo: shouldn't be list
-    if type(name) == "list":
-        name = name[0]
+
+    all_variant_labels = uniq_filter_none(
+        flatten_list(list(map(lambda kv: kv.attributes.get('variant_labels', []), item.variants))))
+    all_variant_labels = uniq_filter_none(
+        flatten_list(list(map(lambda x: x.split(' '), all_variant_labels))))
+    if len(all_variant_labels) > 0:
+        for variant_label in all_variant_labels:
+            name = replace_string_word_ignore_case(name, variant_label, '')
 
     model_info = extract_brand_model_info(item.brand, name)
     brand_slug = model_info["brand_slug"]
@@ -79,10 +86,11 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
             variant_labels = kv.attributes.get('variant_labels', [])
             if variant_labels is None:
                 variant_labels = []
+            # todo: extract common fn
             variant_labels = list(filter(lambda x: x.endswith('m') or x.endswith('m²'), variant_labels))
             if len(variant_labels) > 0:
                 size = variant_labels[0]
-        size=cleanup_size(size)
+        size = cleanup_size(size)
         variant_name = kv.name
         if type(variant_name) == "list" and len(variant_name) > 0:
             variant_name = variant_name[0]
@@ -96,7 +104,6 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
                 _, size = extract_and_cleanup_kite_size(name_variant)
                 if size is not None:
                     break
-
 
         return NormalizedItemVariant(
             price=kv.price,
