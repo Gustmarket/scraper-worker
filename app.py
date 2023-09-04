@@ -17,6 +17,13 @@ def perform_schedule_crawlable_entity():
     flash("Your schedule_crawlable_entity job has been submitted.")
     return redirect('/')
 
+
+@app.route('/schedule_url_batch', methods=['POST'])
+def perform_schedule_url_batch():
+    schedule_url_batch.delay()
+    flash("Your schedule_url_batch job has been submitted.")
+    return redirect('/')
+
 @app.route('/process_out_of_stock_raw_items_task', methods=['POST'])
 def perform_process_out_of_stock_raw_items_task():
     process_out_of_stock_raw_items_task.delay()
