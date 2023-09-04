@@ -1,3 +1,5 @@
+import datetime
+
 import database
 from processing.raw_items_processor.mapping.normalization import normalize_pre_processed_item, \
     map_and_normalize_pre_processed_items
@@ -109,6 +111,32 @@ def upsert_product_offers():
         sku_source_tuples = list(map(lambda o: (o['internal_sku'], o['offer_source']), chunk))
         database.set_out_of_stock_offers(sku_source_tuples)
         database.bulk_upsert_product_offers(chunk)
+
+
+def process_out_of_stock_raw_items():
+    out_of_stock = database.get_out_of_stock_raw_items()
+
+    item_ids = []
+    item_urls = []
+    for item in out_of_stock:
+        item_ids.append(item['_id'])
+        item_urls.append(item['url'])
+
+    database.get_model('product_urls').update_many({
+        'url': {
+            '$in': item_urls
+        }
+    }, {
+        '$set': {
+            'next_update': datetime.datetime.now()
+        }
+    })
+
+    database.get_model('raw_items').delete_many({
+        '_id': {
+            '$in': item_ids
+        }
+    })
 
 def chunk_array(array, chunk_size):
     return [array[i:i + chunk_size] for i in range(0, len(array), chunk_size)]

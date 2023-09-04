@@ -60,6 +60,12 @@ def get_unprocessed_raw_items():
     })
 
 
+def get_out_of_stock_raw_items():
+    return get_model('raw_items').find({
+        'type': 'OUT_OF_STOCK'
+    })
+
+
 def get_pre_processed_items():
     return get_model('pre_processed_items').find({
         '$or': [

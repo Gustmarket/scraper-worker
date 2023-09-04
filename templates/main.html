@@ -17,16 +17,14 @@
                 {% endif %}
                 {% endwith %}
             </div>
-            <form action="/add" method="POST" class="form-inline">
-                <div class="form-group">
-                    <label for="x">X</label>
-                    <input id="x" class="form-control mx-3" type="number" name="x"/>
-                </div>
-                <div class="form-group mx-3">
-                    <label for="y">Y</label>
-                    <input id="y" class="form-control mx-3" type="number" name="y"/>
-                </div>
-                <button class="btn btn-primary" type="submit">Add X and Y</button>
+            <form action="/schedule_crawlable_entity" method="POST" class="form-inline">
+                <button class="btn btn-primary" type="submit">schedule_crawlable_entity</button>
+            </form>
+            <form action="/schedule_url_batch" method="POST" class="form-inline">
+                <button class="btn btn-primary" type="submit">schedule_url_batch</button>
+            </form>
+            <form action="/process_out_of_stock_raw_items_task" method="POST" class="form-inline">
+                <button class="btn btn-primary" type="submit">process_out_of_stock_raw_items_task</button>
             </form>
         </div>
     </div>

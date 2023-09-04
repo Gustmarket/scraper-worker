@@ -7,7 +7,7 @@ from celery.utils.log import get_task_logger
 from playwright.async_api import async_playwright
 
 from processing.raw_items_processor import process_raw_items, normalize_pre_processed_items, \
-    upsert_products_from_normalized_items, upsert_product_offers
+    upsert_products_from_normalized_items, upsert_product_offers, process_out_of_stock_raw_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
 
@@ -72,6 +72,9 @@ def upsert_products_from_normalized_items_task():
 def upsert_product_offers_task():
     upsert_product_offers()
 
+@app.task
+def process_out_of_stock_raw_items_task():
+    process_out_of_stock_raw_items()
 
 async def schedule_crawlable_entity_async():
     # todo: count before starting
@@ -87,6 +90,5 @@ async def schedule_url_batch_async():
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
         for i in range(1, 10):
-            print('schedule_url_batch_async', i)
+            logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
-
