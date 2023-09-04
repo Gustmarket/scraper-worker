@@ -147,7 +147,11 @@ def upsert_product_offers():
 
     logger.info(f'got {len(offers)} offers items out of {len(item_ids)} items')
     chunks = chunk_array(offers, 500)
+    logger.info(f'got {len(chunks)} chunks of offers')
+    index = 1
     for chunk in chunks:
+        logger.info(f'processing chunk {index} of {len(chunks)}')
+        index = index + 1
         item_ids = list(map(lambda o: o['normalized_item_id'], chunk))
         offer_hashes = list(map(lambda o: o['offer_hash'], chunk))
         database.set_out_of_stock_offers(offer_hashes)
