@@ -62,6 +62,27 @@ def re_process_source_raw_items(source):
     })
     process_raw_items_task.delay()
 
+@app.task
+def re_process_brand_raw_items(brand_slug):
+    normalized_items_for_brand = database.get_model('normalized_items').find({
+        'item.brand_slug': brand_slug
+    })
+
+    hashes = []
+    for normalized_item in normalized_items_for_brand:
+        hashes.append(normalized_item['hash'])
+
+    database.get_model('raw_items').update_many({
+        'hash': {
+            '$in': hashes
+        }
+    }, {
+        '$set': {
+            'processed': False
+        }
+    })
+
+    process_raw_items_task.delay()
 
 @app.task
 def process_raw_items_task():

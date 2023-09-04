@@ -42,6 +42,11 @@ color_list = [
     'abyssflame',
     'abyss/flame'
     'abyss / flame',
-    'onyx'
+    'onyx',
+    'glacierabyss',
+    'glacier/abyss'
+    'glacier / abyss'
+    'glacier',
+    'abyss',
     # Add more color strings as needed
 ]
