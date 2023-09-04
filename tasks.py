@@ -6,6 +6,7 @@ from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 from playwright.async_api import async_playwright
 
+import database
 from processing.raw_items_processor import process_raw_items, normalize_pre_processed_items, \
     upsert_products_from_normalized_items, upsert_product_offers, process_out_of_stock_raw_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
@@ -50,6 +51,18 @@ def schedule_crawlable_entity():
 
 
 @app.task
+def re_process_source_raw_items(source):
+    database.get_model('raw_items').update_many({
+        'source': source
+    }, {
+        '$set': {
+            'processed': False
+        }
+    })
+    process_raw_items_task.delay()
+
+
+@app.task
 def process_raw_items_task():
     nr_of_items = process_raw_items()
     if nr_of_items > 0:
@@ -72,9 +85,11 @@ def upsert_products_from_normalized_items_task():
 def upsert_product_offers_task():
     upsert_product_offers()
 
+
 @app.task
 def process_out_of_stock_raw_items_task():
     process_out_of_stock_raw_items()
+
 
 async def schedule_crawlable_entity_async():
     # todo: count before starting

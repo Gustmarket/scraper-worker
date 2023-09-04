@@ -1,6 +1,8 @@
 import os
+
 from flask import Flask, flash, render_template, redirect, request
-from tasks import schedule_crawlable_entity,schedule_url_batch, process_out_of_stock_raw_items_task
+
+from tasks import schedule_crawlable_entity, schedule_url_batch, process_out_of_stock_raw_items_task,re_process_source_raw_items
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', "super-secret")
@@ -24,8 +26,20 @@ def perform_schedule_url_batch():
     flash("Your schedule_url_batch job has been submitted.")
     return redirect('/')
 
+
 @app.route('/process_out_of_stock_raw_items_task', methods=['POST'])
 def perform_process_out_of_stock_raw_items_task():
     process_out_of_stock_raw_items_task.delay()
     flash("Your process_out_of_stock_raw_items_task job has been submitted.")
+    return redirect('/')
+
+
+@app.route('/re_process_source_raw_items', methods=['POST'])
+def perform_re_process_source_raw_items():
+    source = request.form['source']
+    if source is None or source == "":
+        flash("source is required")
+        return redirect('/')
+    re_process_source_raw_items.delay()
+    flash("Your re_process_source_raw_items job has been submitted.")
     return redirect('/')

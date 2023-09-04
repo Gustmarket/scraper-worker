@@ -79,7 +79,7 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
             variant_labels = kv.attributes.get('variant_labels', [])
             if variant_labels is None:
                 variant_labels = []
-            variant_labels = list(filter(lambda x: x.endswith('m'), variant_labels))
+            variant_labels = list(filter(lambda x: x.endswith('m') or x.endswith('m²'), variant_labels))
             if len(variant_labels) > 0:
                 size = variant_labels[0]
         size=cleanup_size(size)
