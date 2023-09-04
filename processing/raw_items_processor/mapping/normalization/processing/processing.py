@@ -53,6 +53,7 @@ def extract_and_cleanup_condition(raw_name):
     demo_keywords = [
         "(demo)",
         "demo",
+        "Testkite",
         "TEST"
     ]
 
