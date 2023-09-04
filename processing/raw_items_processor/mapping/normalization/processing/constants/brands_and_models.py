@@ -17,7 +17,7 @@ brands_and_models = [
         "kites": [
             build_kite_variant("Lift", [], 'lift'),
             build_kite_variant("Lift V2", [], 'lift'),
-            build_kite_variant("Lift V3", [], 'lift'),
+            build_kite_variant("Lift V3", [], 'lift', 2023),
             build_kite_variant("Lift V13", [], 'lift'),
             build_kite_variant("Lithium Progression", [], 'lithium'),
             build_kite_variant("Lithium Progression V2", [], 'lithium'),

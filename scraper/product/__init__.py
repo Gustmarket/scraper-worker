@@ -45,6 +45,8 @@ async def scrape_and_save_product(product_url, playwright_context):
         return
 
     data = await domain_handler(url=url, playwright_context=playwright_context)
+    if data is None:
+        data = (None, None)
 
     (product, product_type) = data
     if product is None:
