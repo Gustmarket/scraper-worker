@@ -133,3 +133,5 @@ async def schedule_url_batch_async():
         for i in range(1, 10):
             logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
+
+re_process_brand_raw_items.delay('airush')

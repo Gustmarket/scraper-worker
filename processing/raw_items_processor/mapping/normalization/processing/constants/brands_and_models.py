@@ -41,7 +41,7 @@ brands_and_models = [
             build_kite_variant("Union V4", [], 'union'),
             build_kite_variant("Union V5", [], 'union'),
             build_kite_variant("Union V6", [], 'union'),
-            build_kite_variant("Wave V9"),
+            build_kite_variant("Wave V9", [], 'wave'),
         ]
     },
     {
