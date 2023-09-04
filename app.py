@@ -40,6 +40,6 @@ def perform_re_process_source_raw_items():
     if source is None or source == "":
         flash("source is required")
         return redirect('/')
-    re_process_source_raw_items.delay()
+    re_process_source_raw_items.delay(source)
     flash("Your re_process_source_raw_items job has been submitted.")
     return redirect('/')
