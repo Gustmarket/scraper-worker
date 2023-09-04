@@ -121,6 +121,10 @@ def bulk_upsert_products(items):
             "internal_sku": item["internal_sku"],
         },
             {
+                "$set": {
+                    # todo: remove migration code
+                    "unique_model_identifier": item.get("unique_model_identifier"),
+                },
                 "$setOnInsert": {
                     "internal_sku": item['internal_sku'],
                     "name": item['name'],

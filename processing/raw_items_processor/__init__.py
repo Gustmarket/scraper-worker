@@ -71,7 +71,7 @@ def upsert_products_from_normalized_items():
         products.append({
             "internal_sku": item['internal_sku'],
             "name": item['name'],
-            "slug": item['slug'],  # todo: rename to unique_model_identifier
+            "unique_model_identifier": item.get('unique_model_identifier'),
             "brand": item['brand'],
             "brand_slug": item['brand_slug'],
             "category": item['category'],
@@ -82,6 +82,7 @@ def upsert_products_from_normalized_items():
             }
         })
 
+    logger.info(f'got {len(products)} products out of {len(item_ids)} items')
     database.bulk_upsert_products(products)
     database.get_model('normalized_items').update_many({
         '_id': {
@@ -119,7 +120,7 @@ def upsert_product_offers():
             "offer_url": item['url'],
             "offer_source": normalized_item['source'],
             "name": item['name'],
-            "slug": item['slug'],
+            "unique_model_identifier": item.get('unique_model_identifier'),
             "brand": item['brand'],
             "brand_slug": item['brand_slug'],
             "category": item['category'],

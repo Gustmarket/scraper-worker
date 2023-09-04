@@ -125,7 +125,7 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
         is_standardised=model_info.get('is_standardised', False),
         internal_sku=get_internal_sku(year=year, brand_slug=brand_slug, name=name),
         name=name,
-        slug=model_info.get('slug', None),
+        unique_model_identifier=model_info.get('unique_model_identifier', None),
         raw_name=item.name,
         brand=brand_name,
         brand_slug=brand_slug,

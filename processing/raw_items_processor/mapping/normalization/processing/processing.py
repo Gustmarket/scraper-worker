@@ -1,5 +1,6 @@
 import re
 
+from celery.utils.log import get_task_logger
 from thefuzz import process, fuzz
 
 from processing.raw_items_processor.mapping.normalization.processing.cleanup import \
@@ -8,9 +9,9 @@ from processing.raw_items_processor.mapping.normalization.processing.constants.b
     brands_and_models
 from processing.raw_items_processor.mapping.utils import flatten_list
 
-
-from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
+
+
 def get_brand_slug(brand):
     if brand is None:
         return None
@@ -90,8 +91,9 @@ def extract_and_cleanup_kite_size(name):
         return name, None
 
 
-def get_model_slug(name):
+def get_unique_model_identifier(name):
     return name.lower().replace('  ', ' ').replace(' ', '_').replace('/', '_')
+
 
 def cleanup_all_sizes_from_name(name):
     name_to_parse = name
@@ -123,7 +125,7 @@ def cleanup_all_sizes_from_name(name):
 
 def extract_model(brand_slug, name):
     brand_with_models = list(filter(lambda x: x["slug"] == brand_slug, brands_and_models))
-    default_return_value = {"name": name, "slug": get_model_slug(name)}
+    default_return_value = {"name": name, "unique_model_identifier": get_unique_model_identifier(name)}
     if len(brand_with_models) == 0:
         return default_return_value
 
@@ -159,7 +161,8 @@ def extract_model(brand_slug, name):
     if score >= 90:
         return {
             "name": found['name'],
-            "slug": get_model_slug(found['name']) if found.get('slug', None) is None else found['slug'],
+            "unique_model_identifier": get_unique_model_identifier(found['name']) if found.get(
+                'unique_model_identifier', None) is None else found['unique_model_identifier'],
             "year": found.get('year', None),
             "is_standardised": True
         }
@@ -194,14 +197,14 @@ def extract_brand_model_info(raw_brand, raw_name):
 
     model_info = extract_model(brand_slug, model_name)
     model_name = model_info["name"]
-    model_slug = model_info.get("slug", None)  # todo: make one
+    model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
     return {
         "is_standardised": model_info.get("is_standardised", False),
         "brand_slug": brand_slug,
         "brand_name": brand_name,
         "name": model_name,
-        "slug": model_slug,
+        "unique_model_identifier": model_unique_model_identifier,
         "condition": condition,
         "size": size,
         "year": model_year if year is None else year

@@ -1,10 +1,10 @@
-def build_kite_variant(name, variants=None, slug=None, year=None):
+def build_kite_variant(name, variants=None, unique_model_identifier=None, year=None):
     if variants is None:
         variants = []
     return {
         "name": name,
         "variants": variants,
-        "slug": slug,
+        "unique_model_identifier": unique_model_identifier,
         "year": year
     }
 

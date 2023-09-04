@@ -67,13 +67,13 @@ class NormalizedItem(BaseItem):
     images: [str]
     attributes: dict
 
-    def __init__(self, id, is_standardised, url, internal_sku, name, slug,raw_name,brand, brand_slug, condition, category, variants, images, attributes):
+    def __init__(self, id, is_standardised, url, internal_sku, name, unique_model_identifier,raw_name,brand, brand_slug, condition, category, variants, images, attributes):
         self.id = id
         self.is_standardised = is_standardised
         self.url = url
         self.internal_sku = internal_sku
         self.name = name
-        self.slug = slug
+        self.unique_model_identifier = unique_model_identifier
         self.raw_name = raw_name
         self.brand = brand
         self.brand_slug = brand_slug
@@ -90,7 +90,7 @@ class NormalizedItem(BaseItem):
         return self.__str__()
 
     def __eq__(self, other):
-        return self.id == other.id and self.internal_sku == other.internal_sku and self.condition == other.condition and self.name == other.name and self.brand_slug == other.brand_slug and self.category == other.category and self.year == other.year
+        return self.id == other.id and self.internal_sku == other.internal_sku and self.condition == other.condition and self.name == other.name and self.brand_slug == other.brand_slug and self.category == other.category
 
     def __hash__(self):
         return hash((self.id, self.internal_sku, self.name, self.brand_slug, self.attributes, self.condition, self.category))
@@ -102,7 +102,7 @@ class NormalizedItem(BaseItem):
             "url": self.url,
             "internal_sku": self.internal_sku,
             "name": self.name,
-            "slug": self.slug,
+            "unique_model_identifier": self.unique_model_identifier,
             "raw_name": self.raw_name,
             "brand": self.brand,
             "brand_slug": self.brand_slug,
@@ -121,7 +121,7 @@ class NormalizedItem(BaseItem):
             url=json['url'],
             internal_sku=json['internal_sku'],
             name=json['name'],
-            slug=json['slug'],
+            unique_model_identifier=json.get('unique_model_identifier'),
             raw_name=json.get('raw_name'),
             brand=json['brand'],
             brand_slug=json['brand_slug'],
