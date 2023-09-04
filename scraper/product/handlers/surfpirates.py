@@ -1,11 +1,12 @@
 import asyncio
-import traceback
 from itertools import product
 
 from bs4 import BeautifulSoup
 
 from scraper.product.mapping import extract_product
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 def generate_combinations(attribute_options):
     return list(product(*attribute_options))
@@ -49,14 +50,13 @@ async def surfpirates(url, playwright_context):
                 variant_label = await variant_selector_handle.evaluate('x => x.getAttribute("data-title")')
                 variant_labels.append(variant_label)
 
-                print(f'clicking: {variant_label}')
+                logger.debug(f'clicking: {variant_label}')
                 if 'not available' in variant_label:
                     in_stock = False
                     break
                 await variant_selector_handle.click()
 
             if in_stock:
-                print('waiting for url')
                 await wait_for_diff_url()
                 if not page_has_diff_url():
                     raise Exception('could not load different url')
@@ -75,7 +75,7 @@ async def surfpirates(url, playwright_context):
                     'variants': variants
                 }, 'MICRODATA_VARIANTS_ITEM')
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

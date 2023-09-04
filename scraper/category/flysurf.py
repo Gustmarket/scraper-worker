@@ -1,8 +1,8 @@
 import asyncio
-import traceback
 
 from scraper.category.base import push_product_urls
-
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 async def flysurf_category_scraper(url, enqueue_link, playwright_context, user_data):
     page = None
@@ -24,15 +24,15 @@ async def flysurf_category_scraper(url, enqueue_link, playwright_context, user_d
                 await push_product_urls(scraped_url=url, source='flysurf', urls=urls, user_data=user_data)
                 next = await page.query_selector('li.page-item:not(.disabled) .page-link[title="Suivant"]')
                 if next is None:
-                    print('no more links flysurf')
+                    logger.info('no more links flysurf')
                     break
                 await next.click()
             else:
-                print('no more links flysurf')
+                logger.info('no more links flysurf')
                 break
 
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

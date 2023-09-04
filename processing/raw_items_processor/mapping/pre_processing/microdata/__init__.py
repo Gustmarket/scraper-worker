@@ -7,6 +7,8 @@ from processing.raw_items_processor.mapping.pre_processing.microdata.utils impor
 from processing.raw_items_processor.mapping.utils import flatten_list, filter_none, uniq_filter_none
 
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 def map_correct_price(price, price_currency, list_price):
     price_result = GustmarketPrice.from_price_string(price, price_currency)
 
@@ -26,7 +28,7 @@ def map_product_with_offers_from_crawled_item(crawled_item):
     ld_json_products = filter_none(list(map(lambda x: map_json_ld(x, extra_data), crawled_item.get('json-ld', []))))
 
     if len(microdata_products) > 1 or len(ld_json_products) > 1:
-        print('multiple products for item')
+        logger.info('multiple products for item')
         return None
 
     products = filter_none(flatten_list(microdata_products + ld_json_products))

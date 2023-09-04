@@ -10,7 +10,7 @@ async def kitemana(url, playwright_context):
 
         return product, 'KITEMANA_PRODUCT'
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

@@ -1,8 +1,9 @@
 import asyncio
-import traceback
 
 from scraper.product.mapping import extract_product
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 def combination_to_url_hash_path(combo):
     return f"{combo['id_attribute']}-{combo['group']}-{combo['attribute']}"
@@ -22,7 +23,7 @@ async def attributes_combinations_product_scraper(url,
 
         initial_url = get_initial_url(url, attributes_combinations)
         if initial_url is None:
-            print('no initial url')
+            logger.debug('no initial url')
             return
         sizes = [c for c in attributes_combinations if c['group'] == kite_size_group_key]
         variants = []
@@ -31,9 +32,9 @@ async def attributes_combinations_product_scraper(url,
         last_price = None
         for sizeCombo in sizes:
             url = f"{initial_url}/{combination_to_url_hash_path(sizeCombo)}"
-            print(f"getting product: {url}")
+            logger.debug(f"getting product: {url}")
             await page.goto(url)
-            print(page.url)
+            logger.debug(page.url)
 
             tries = 0
             while tries < 10:
@@ -54,7 +55,7 @@ async def attributes_combinations_product_scraper(url,
                     'url': url,
                     'availability': availability
                 }
-                print(last_price, new_price)
+                logger.debug(f"pricecompare: {last_price}, {new_price}")
                 if last_price != new_price:
                     last_price = new_price
                     variants.append(item)
@@ -66,7 +67,7 @@ async def attributes_combinations_product_scraper(url,
         }
         return result, 'MICRODATA_VARIANTS_ITEM'
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

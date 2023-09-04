@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 
 from scraper.product.mapping import extract_product
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 def get_size_variants(soup):
     def variant_group_filter_predicate(variant_group):
@@ -29,7 +31,7 @@ async def you_love_it(url, playwright_context):
 
     for variant in variants:
         prod_url = f"{url}&{variant['name']}={variant['value']}"
-        print(prod_url)
+        logger.debug(f"you-love-it variant url: {prod_url}")
         response = requests.get(prod_url)
         soup = BeautifulSoup(response.content, 'html.parser')
 

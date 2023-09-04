@@ -1,6 +1,6 @@
-import traceback
 from datetime import datetime, timedelta
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, urljoin
+from celery.utils.log import get_task_logger
 
 import pymongo
 from pymongo import ReturnDocument
@@ -11,7 +11,7 @@ from scraper.category.pw import playwright_category_scraper
 from scraper.category.shopify import shopify_category_scraper
 from scraper.category.soup import soup_category_scraper
 from scraper.utils import get_main_domain
-
+logger = get_task_logger(__name__)
 
 def get_next_page_url_query_param(url, param_key='page'):
     parsed_url = urlparse(url)
@@ -30,7 +30,7 @@ def get_next_page_url_query_param_factory(param_key):
 
 
 def no_next_page(url):
-    print('no next page handler')
+    logger.info('no next page handler')
     return None
 
 
@@ -68,7 +68,7 @@ def glissattitude_get_next_page_url(url):
 def soup_selector_get_next_page_url(next_page_selector):
     def internal(url, soup):
         links = soup.select(next_page_selector)
-        print(links)
+
         urls = []
         for link in links:
             link_href = link.get('href')
@@ -76,7 +76,7 @@ def soup_selector_get_next_page_url(next_page_selector):
             if link_url.startswith(('http://', 'https://')):
                 urls.append(link_url)
         urls = list(set(urls))
-        print(next_page_selector, urls)
+
         if len(urls) == 0:
             return None
         return urls[0]
@@ -169,12 +169,12 @@ add_playwright_handler('side-shore.com',
 async def scrape_category(url, user_data, playwright_context):
     domain_handler = category_domain_handlers.get(get_main_domain(url))
     if domain_handler is None:
-        print(f'no domain handler for {url}')
+        logger.info(f'no domain handler for {url}')
         return
     if user_data is None:
         user_data = {}
 
-    print(f'scraping category: {url}')
+    logger.info(f'scraping category: {url}')
 
     async def enqueue_link(new_url):
         await scrape_category(new_url, user_data, playwright_context)
@@ -205,9 +205,9 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
         elif crawlable_entity['type'] == "facebook-group":
             # todo: probably still apify
             # run = apify.start_facebook_actor(crawlable_entity['config']['group_id'])
-            print('fb')
+            logger.debug('fb not implemented')
     except Exception as e:
-        traceback.print_exc()
+        logger.exception('error while scraping category')
         crawlable_entities_model.update_one({'_id': crawlable_entity['_id']},
                                             {'$set': {
                                                 'last_error': str(e),

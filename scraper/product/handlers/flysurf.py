@@ -1,8 +1,10 @@
 import asyncio
-import traceback
 
 from scraper.product.mapping import extract_product
 
+
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 async def flysurf(url, playwright_context):
     page = None
@@ -23,7 +25,7 @@ async def flysurf(url, playwright_context):
             price = await (await page.query_selector('.dp-product-price .priceWithDiscount')).text_content()
             input_class = await variant_input.get_attribute('class')
             in_stock = input_class is None or 'disabled' not in input_class
-            print('data', in_stock, size, price)
+            logger.debug(f'flysurf data: {in_stock} {size} {price}')
             variants.append({
                 'in_stock': in_stock,
                 'size': size,
@@ -37,7 +39,7 @@ async def flysurf(url, playwright_context):
             }
         }, 'MICRODATA_ITEM'
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

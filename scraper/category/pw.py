@@ -1,7 +1,8 @@
 import asyncio
-import traceback
 
 from scraper.category.base import push_product_urls
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 
 def playwright_category_scraper(source, link_selector, get_next_page_url, should_end):
@@ -21,10 +22,10 @@ def playwright_category_scraper(source, link_selector, get_next_page_url, should
                 await push_product_urls(scraped_url=url, source=source, urls=urls, user_data=user_data)
                 await enqueue_link(get_next_page_url(url))
             else:
-                print(f'no more links {source}')
+                logger.info(f'no more links {source}')
 
         except Exception as e:
-            traceback.print_exc()
+            raise e
         finally:
             if page is not None:
                 await page.close()

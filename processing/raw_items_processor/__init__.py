@@ -3,13 +3,16 @@ from processing.raw_items_processor.mapping.normalization import normalize_pre_p
     map_and_normalize_pre_processed_items
 from processing.raw_items_processor.mapping.pre_processing import PreProcessor
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
+
 def process_raw_items():
     raw_items = database.get_unprocessed_raw_items()
 
     (raw_item_ids, items) = PreProcessor.process_items(raw_items)
 
     nr_of_items = len(items)
-    print('got', nr_of_items, 'mapped items out of', len(raw_item_ids), 'items')
+    logger.info(f'got {nr_of_items} mapped items out of {len(raw_item_ids)} items')
 
     database.bulk_upsert_items(items=items, id_key='raw_item_id', model_name='pre_processed_items', upsert=True)
     database.get_model('raw_items').update_many({

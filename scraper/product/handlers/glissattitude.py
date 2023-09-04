@@ -1,9 +1,10 @@
 import asyncio
-import traceback
 
 from scraper.product.mapping import extract_product
 
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 async def glissattitude(url, playwright_context):
     page = None
 
@@ -23,7 +24,7 @@ async def glissattitude(url, playwright_context):
         for size_option_id in size_option_values:
             raw_item_url = f"{url}#attr={size_option_id}"
             await page.goto(raw_item_url)
-            print(f"variant: {raw_item_url}")
+            logger.debug(f"variant: {raw_item_url}")
 
             def req_pred(r):
                 is_url = r.url == 'https://www.glissattitude.com/sale/get_combination_info_website'
@@ -58,7 +59,7 @@ async def glissattitude(url, playwright_context):
                         'variants': product_variants
                     }, 'MICRODATA_VARIANTS_ITEM')
     except Exception as e:
-        traceback.print_exc()
+        raise e
     finally:
         if page is not None:
             await page.close()

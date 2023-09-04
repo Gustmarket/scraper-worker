@@ -9,6 +9,8 @@ from processing.raw_items_processor.mapping.normalization.processing.constants.b
 from processing.raw_items_processor.mapping.utils import flatten_list
 
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 def get_brand_slug(brand):
     if brand is None:
         return None
@@ -134,9 +136,6 @@ def extract_model(brand_slug, name):
             found = brand_model
 
     if score >= 90:
-        fonund_slug = found.get('slug', None)
-        if fonund_slug is not None:
-            print(fonund_slug)
         return {
             "name": found['name'],
             "slug": get_model_slug(found['name']) if found.get('slug', None) is None else found['slug'],
@@ -144,7 +143,7 @@ def extract_model(brand_slug, name):
             "is_standardised": True
         }
 
-    print(str(score), '-', found["name"], 'for', name, 'parsed', name_to_parse)
+    logger.debug(f'{str(score)} - {found["name"]} for {name} parsed {name_to_parse}')
 
     return default_return_value
 

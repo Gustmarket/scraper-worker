@@ -1,4 +1,3 @@
-import traceback
 from datetime import datetime, timedelta
 
 import pymongo
@@ -16,6 +15,9 @@ from scraper.product.handlers.you_love_it import you_love_it
 from scraper.product.handlers.zephcontrol import zephcontrol
 from scraper.utils import get_main_domain
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
+
 product_route_handlers = {
     'you-love-it.eu': you_love_it,
     'coronation-industries.de': coronation_industries,
@@ -32,14 +34,14 @@ product_route_handlers = {
 async def scrape_and_save_product(product_url, playwright_context):
     url = product_url['url']
     url_hash = product_url['hash']
-    print(f'Scraping {url} ...')
+    logger.info(f'Scraping {url} ...')
     if url_hash is None:
-        print('no hash present on product')
+        logger.info(f'no hash present on product: {url}')
         return
     source = get_main_domain(url)
     domain_handler = product_route_handlers.get(source)
     if domain_handler is None:
-        print('no domain handler for', source)
+        logger.debug(f'no domain handler for: {source} -> {url}')
         return
 
     data = await domain_handler(url=url, playwright_context=playwright_context)
@@ -84,7 +86,7 @@ async def get_one_expired_product_url_and_update(playwright_context):
     try:
         await scrape_and_save_product(product_url, playwright_context)
     except Exception as e:
-        traceback.print_exc()
+        logger.exception('error while scraping product')
         product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
                                           'last_error': str(e),

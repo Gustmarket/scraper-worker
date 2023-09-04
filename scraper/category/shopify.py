@@ -3,18 +3,19 @@ import hashlib
 import requests
 
 import database
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 
 def shopify_category_scraper(source):
     async def cat_s(url):
-        print('cat')
         base_url = f"{url}/products.json"
-        print('test', base_url)
+        logger.debug(f"shopify scraper: {base_url}")
         current_page = 0
         while current_page < 20:
             current_page = current_page + 1
             page_url = f"{base_url}?page={current_page}"
-            print(page_url)
+            logger.debug(f"shopify scraper next page: {page_url}")
             response = requests.get(page_url)
             products = response.json().get('products', [])
             if len(products) == 0:

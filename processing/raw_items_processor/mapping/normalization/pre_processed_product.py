@@ -8,6 +8,9 @@ from processing.raw_items_processor.mapping.pre_processing.base import PreProces
 from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none
 
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
+
 def get_internal_sku(year, brand_slug, name):
     internal_sku = ''
     if year is not None:
@@ -53,7 +56,7 @@ def cleanup_size(size):
 
 def normalize_pre_processed_product(item: PreProcessedProduct):
     if item.brand is None and item.name is None:
-        print('none', item)
+        logger.debug(f'none {item}')
         return None
 
     name = item.name
@@ -90,7 +93,6 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
                 name_variants = []
             name_variants = uniq_filter_none(flatten_list(name_variants + [variant_name]))
             for name_variant in name_variants:
-                print(name_variant)
                 _, size = extract_and_cleanup_kite_size(name_variant)
                 if size is not None:
                     break
