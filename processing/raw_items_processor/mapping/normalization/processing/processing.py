@@ -3,7 +3,7 @@ import re
 from thefuzz import process, fuzz
 
 from processing.raw_items_processor.mapping.normalization.processing.cleanup import \
-    cleanup_name_string_by_keywords, replace_string_ignore_case
+    cleanup_name_string_by_keywords, replace_string_ignore_case, replace_string_word_ignore_case
 from processing.raw_items_processor.mapping.normalization.processing.constants.brands_and_models import \
     brands_and_models
 from processing.raw_items_processor.mapping.utils import flatten_list
@@ -92,6 +92,33 @@ def extract_and_cleanup_kite_size(name):
 def get_model_slug(name):
     return name.lower().replace('  ', ' ').replace(' ', '_').replace('/', '_')
 
+def cleanup_all_sizes_from_name(name):
+    name_to_parse = name
+    keywords = []
+    for i in reversed(range(1, 30)):
+        keywords.append(f"{i}sqm")
+        keywords.append(f"{i}m")
+        keywords.append(f"{i} m")
+        keywords.append(f"{i}m²")
+        keywords.append(f"{i} m²")
+        float_1 = "{:.1f}".format(i + 0.5)
+        float_2 = float_1.replace('.', ',')
+        keywords.append(f"{float_1}sqm")
+        keywords.append(f"{float_1}m")
+        keywords.append(f"{float_1} m")
+        keywords.append(f"{float_1}m²")
+        keywords.append(f"{float_1} m²")
+        keywords.append(f"{float_2}sqm")
+        keywords.append(f"{float_2}m")
+        keywords.append(f"{float_2} m")
+        keywords.append(f"{float_2}m²")
+        keywords.append(f"{float_2} m²")
+
+    for keyword in keywords:
+        name_to_parse = replace_string_word_ignore_case(name_to_parse, keyword, "")
+
+    return name_to_parse
+
 
 def extract_model(brand_slug, name):
     brand_with_models = list(filter(lambda x: x["slug"] == brand_slug, brands_and_models))
@@ -111,14 +138,7 @@ def extract_model(brand_slug, name):
     for brand_variant in brand_with_models[0]["variants"]:
         name_to_parse = replace_string_ignore_case(name_to_parse, brand_variant, "")
 
-    for i in reversed(range(1, 20)):
-        name_to_parse = name_to_parse.replace(f"{i}m", '')
-        float_1 = "{:.1f}".format(i + 0.5)
-        float_2 = float_1.replace('.', ',')
-        name_to_parse = name_to_parse.replace(f"{float_1}m", '')
-        name_to_parse = name_to_parse.replace(f"{float_2}m", '')
-
-    name_to_parse = name_to_parse.replace('\\s\\s', ' ')
+    name_to_parse = cleanup_all_sizes_from_name(name_to_parse).replace('\\s\\s', ' ')
 
     for brand_model in brand_models:
         no_of_variants = 1

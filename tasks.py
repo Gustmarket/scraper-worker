@@ -8,7 +8,8 @@ from playwright.async_api import async_playwright
 
 import database
 from processing.raw_items_processor import process_raw_items, normalize_pre_processed_items, \
-    upsert_products_from_normalized_items, upsert_product_offers, process_out_of_stock_raw_items
+    upsert_products_from_normalized_items, upsert_product_offers, process_out_of_stock_raw_items, \
+    cleanup_inexsistent_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
 
@@ -89,6 +90,10 @@ def upsert_product_offers_task():
 @app.task
 def process_out_of_stock_raw_items_task():
     process_out_of_stock_raw_items()
+
+@app.task
+def cleanup_inexsistent_items_task():
+    cleanup_inexsistent_items()
 
 
 async def schedule_crawlable_entity_async():

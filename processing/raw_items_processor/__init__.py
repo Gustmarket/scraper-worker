@@ -188,5 +188,54 @@ def process_out_of_stock_raw_items():
     })
 
 
+def cleanup_inexsistent_items():
+    unlinked_items = database.get_model('pre_processed_items').aggregate([
+        {'$match': {}},
+        {
+            '$lookup': {
+                'from': 'raw_items',
+                'localField': 'raw_item_id',
+                'foreignField': '_id',
+                'as': 'raw_item'
+            }
+        }, {
+            '$unwind': {
+                'path': '$raw_item',
+                'preserveNullAndEmptyArrays': True
+            }
+        },
+        {'$match': {
+            '$or': [{'raw_item': None}, {'raw_item': {'$exists': False}}]
+        }}, ])
+
+    item_ids = []
+    item_hashes = []
+    for item in unlinked_items:
+        item_ids.append(item['_id'])
+        item_hashes.append(item['hash'])
+
+    logger.info(f'got {len(item_hashes)} unlinked pre processed items')
+    if len(item_hashes) > 0:
+        database.get_model('pre_processed_items').delete_many({
+            '_id': {
+                '$in': item_ids
+            }
+        })
+
+        database.get_model('normalized_items').delete_many({
+            'hash': {
+                '$in': item_hashes
+            }
+        })
+
+        database.get_model('product_offers').delete_many({
+            'offer_hash': {
+                '$in': item_hashes
+            }
+        })
+
+
+
+
 def chunk_array(array, chunk_size):
     return [array[i:i + chunk_size] for i in range(0, len(array), chunk_size)]
