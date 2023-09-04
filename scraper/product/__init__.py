@@ -88,6 +88,12 @@ async def get_one_expired_product_url_and_update(playwright_context):
 
     try:
         await scrape_and_save_product(product_url, playwright_context)
+        product_urls_model.update_one({'_id': product_url['_id']},
+                                      {'$set': {
+                                          'last_error': None,
+                                          'last_error_date': None,
+                                      }},
+                                      upsert=False)
     except Exception as e:
         logger.exception('error while scraping product')
         product_urls_model.update_one({'_id': product_url['_id']},
