@@ -42,7 +42,6 @@ pyparsing==3.0.8
 pyRdfa3==3.5.3
 pytz==2022.1
 rapidfuzz==3.2.0
-rdflib==7.0.0
 redis==4.2.2
 requests==2.31.0
 six==1.16.0
