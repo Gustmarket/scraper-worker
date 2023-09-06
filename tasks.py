@@ -29,6 +29,7 @@ app.conf.timezone = 'UTC'
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch every 10m')
+    sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch_2 every 10m')
     # # Executes every Monday morning at 0:00 a.m.
     sender.add_periodic_task(
         crontab(hour=0, minute=0),
@@ -130,6 +131,6 @@ async def schedule_url_batch_async():
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
-        for i in range(1, 10):
+        for i in range(1, 12):
             logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
