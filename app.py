@@ -9,7 +9,7 @@ from tasks import schedule_crawlable_entity, schedule_url_batch, process_out_of_
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', "super-secret")
 app.config['BASIC_AUTH_USERNAME'] = 'admin'
-app.config['BASIC_AUTH_PASSWORD'] = os.getenv('ADMIN_PW', 'admin')
+app.config['BASIC_AUTH_PASSWORD'] = '5PjJgUvbxaXk5c4h'#os.getenv('ADMIN_PW', 'admin')
 app.config['BASIC_AUTH_FORCE'] = True
 basic_auth = BasicAuth(app)
 
