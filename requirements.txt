@@ -40,7 +40,6 @@ pyee==9.0.4
 pymongo==4.5.0
 pyparsing==3.0.8
 pyRdfa3==3.5.3
-python-dotenv==1.0.0
 pytz==2022.1
 rapidfuzz==3.2.0
 rdflib==7.0.0
