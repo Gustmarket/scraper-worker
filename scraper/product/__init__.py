@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 import pymongo
+from celery.utils.log import get_task_logger
 from pymongo import ReturnDocument
 
 import database
@@ -15,7 +16,6 @@ from scraper.product.handlers.you_love_it import you_love_it
 from scraper.product.handlers.zephcontrol import zephcontrol
 from scraper.utils import get_main_domain
 
-from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 product_route_handlers = {
@@ -101,5 +101,8 @@ async def get_one_expired_product_url_and_update(playwright_context):
                                           'last_error': str(e),
                                           'last_error_date': datetime.now(),
                                           'next_update': datetime.now() + timedelta(hours=1)
-                                      }},
+                                      },
+                                          '$inc': {
+                                              'error_count': 1
+                                          }},
                                       upsert=False)
