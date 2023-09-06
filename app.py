@@ -1,12 +1,19 @@
 import os
 
 from flask import Flask, flash, render_template, redirect, request
+from flask_basicauth import BasicAuth
 
 from tasks import schedule_crawlable_entity, schedule_url_batch, process_out_of_stock_raw_items_task,re_process_source_raw_items,re_process_brand_raw_items
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', "super-secret")
+basic_auth_password = os.getenv('AUTH_PW')
+app.config['BASIC_AUTH_USERNAME'] = 'admin'
+app.config['BASIC_AUTH_PASSWORD'] = basic_auth_password
 
+if basic_auth_password is not None:
+    basic_auth = BasicAuth(app)
+    app.config['BASIC_AUTH_FORCE'] = True
 
 @app.route('/')
 def main():
