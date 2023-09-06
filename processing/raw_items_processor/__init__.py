@@ -71,6 +71,7 @@ def upsert_products_from_normalized_items():
         products.append({
             "internal_sku": item['internal_sku'],
             "name": item['name'],
+            "is_standardised": item.get('is_standardised'),
             "unique_model_identifier": item.get('unique_model_identifier'),
             "brand": item['brand'],
             "brand_slug": item['brand_slug'],

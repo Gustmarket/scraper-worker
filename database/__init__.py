@@ -123,6 +123,7 @@ def bulk_upsert_products(items):
             {
                 "$set": {
                     # todo: remove migration code
+                    "is_standardised": item.get("is_standardised"),
                     "unique_model_identifier": item.get("unique_model_identifier"),
                 },
                 "$setOnInsert": {
