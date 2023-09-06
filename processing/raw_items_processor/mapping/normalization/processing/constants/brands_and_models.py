@@ -108,7 +108,7 @@ brands_and_models = [
             build_kite_variant("Evo D/Lab", [
                 "evo dlab",
                 "evodlab",
-                "evo d_lab"], "2023"),  # note: for now
+                "evo d_lab"], "evo_d_lab", "2023"),  # note: for now
             build_kite_variant("Juice"),
             build_kite_variant("Juice SLS", ["juicesls"]),
             build_kite_variant("Juice D/Lab", [
@@ -125,7 +125,7 @@ brands_and_models = [
                 "neo dlab",
                 "neo d lab",
                 "neodlab",
-                "neo d-lab"]),
+                "neo d-lab"], "neo_d_lab","2023"),
             build_kite_variant("Rebel"),
             build_kite_variant("Rebel SLS", ["rebelsls"]),
             build_kite_variant("Vegas"),
