@@ -48,5 +48,6 @@ color_list = [
     'glacier / abyss'
     'glacier',
     'abyss',
+    'vanilla',
     # Add more color strings as needed
 ]

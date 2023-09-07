@@ -155,7 +155,8 @@ brands_and_models = [
             build_kite_variant("RS V4", ["rsv4"], "rs"),
             build_kite_variant("RS V5", ["rsv5"], "rs"),
             build_kite_variant("RS V6", ["rsv6"], "rs"),
-            build_kite_variant("RS V7", ["rsv7"], "rs"),
+            build_kite_variant("RS V7", ["rsv7","24 rs v7"], "rs"),
+            build_kite_variant("RS+", ["rs+ v1","rs+ plus v1", "rs+ plus v1 dynea tex"], "rs_plus"),
             build_kite_variant("WS", [], "ws"),
             build_kite_variant("WS V2", ["wsv2"], "ws"),
             build_kite_variant("WS V3", ["wsv3"], "ws"),
@@ -164,8 +165,9 @@ brands_and_models = [
             build_kite_variant("WS V6", ["wsv6"], "ws"),
             build_kite_variant("WS V7", ["wsv7"], "ws"),
             build_kite_variant("XS", [], "xs"),
+            build_kite_variant("XS c1", ["xsv1"], "xs"),
             build_kite_variant("XS V2", ["xsv2"], "xs"),
-            build_kite_variant("XS V3", ["xsv3"], "xs"),
+            build_kite_variant("XS V3", ["xsv3", "cs v3"], "xs"),
             build_kite_variant("XS V4", ["xsv4"], "xs"),
             build_kite_variant("XS V5", ["xsv5"], "xs"),
         ]
@@ -250,6 +252,7 @@ brands_and_models = [
             build_kite_variant("Dash S26", ["dash s 26", "s26 dash"], "dash", "2022"),
             build_kite_variant("Dash S27", ["dash s 27", "s27 dash"], "dash", "2023"),
             build_kite_variant("Dash LE", [], "dash_le"),
+            build_kite_variant("Dash LE S26", ["dash le s 26", "dash le s26 limited"], "dash_le"),
             build_kite_variant("Dash LE S27", ["dash le s 27"], "dash_le"),
             build_kite_variant("Pivot", [], "pivot"),
             build_kite_variant("Pivot S25", ["pivot s 25", "s25 pivot"], "pivot", "2021"),
@@ -259,12 +262,14 @@ brands_and_models = [
             build_kite_variant("Pivot LE S27", ["pivot le s 27", "s27 pivot le"], "pivot_le", "2023"),
             build_kite_variant("Phoenix", [], "phoenix"),
             build_kite_variant("Slash", [], "slash"),
+            build_kite_variant("Slash S25", ["slash s 25", "s25 slash"], "slash"),
+            build_kite_variant("Slash S26", ["slash s 26", "s26 slash"], "slash"),
             build_kite_variant("Triad", [], "triad"),
             build_kite_variant("Triad S25", ["triad s 25", "s25 triad"], "triad"),
             build_kite_variant("Triad S26", ["triad s 26", "s26 triad"], "triad"),
             build_kite_variant("Triad S27", ["triad s 27", "s27 triad"], "triad"),
             build_kite_variant("Torch", [], "torch"),
-            build_kite_variant("Torch S25", ["s25 torch", "torch s 25"], "torch"),
+            build_kite_variant("Torch S25", ["s25 torch", "torch s 25", "s25 torch w/esp"], "torch"),
             build_kite_variant("Torch S26", ["s26 torch", "torch s 26"], "torch"),
             build_kite_variant("Torch S27", ["s27 torch", "torch s 27"], "torch"),
         ]
@@ -297,7 +302,30 @@ brands_and_models = [
     {
         "slug": "ozone",
         "name": "Ozone",
-        "variants": []  # todo kites
+        "variants": [
+            build_kite_variant("Alpha V1", [], "alpha"),
+            build_kite_variant("Alpha V2", [], "alpha"),
+            build_kite_variant("AMP V1", [], "amp"),
+            build_kite_variant("AMP V2", [], "amp"),
+            build_kite_variant("Catalyst V2", [], "catalyst"),
+            build_kite_variant("Catalyst V3", [], "catalyst"),
+            build_kite_variant("Catalyst V4", [], "catalyst"),
+            build_kite_variant("Chrono V3", ["chrono v3 only"], "chrono"),
+            build_kite_variant("Chrono V4", [], "chrono"),
+            build_kite_variant("Edge V9", [], "edge"),
+            build_kite_variant("Edge V10", [], "edge"),
+            build_kite_variant("Enduro V2", [], "enduro"),
+            build_kite_variant("Enduro V3", [], "enduro"),
+            build_kite_variant("Enduro V4", [], "enduro"),
+            build_kite_variant("Hyperlink V2", ["hyper link v2"], "hyperlink"),
+            build_kite_variant("Hyperlink V3", ["hyper link v3"], "hyperlink"),
+            build_kite_variant("R1 V4", [], "r1"),
+            build_kite_variant("Reo V5", [], "reo"),
+            build_kite_variant("Reo V6", [], "reo"),
+            build_kite_variant("Reo V7", [], "reo"),
+            build_kite_variant("Reo V7 ultra x", [], "reo_ultra_x"),
+            build_kite_variant("Uno V2", [], "uno"),
+        ]  # todo kites
     },
     {
         "slug": "plkb",
@@ -320,12 +348,17 @@ brands_and_models = [
             "Roberto Ricci"
         ],
         "kites": [
+            build_kite_variant("Addiction", [], "addiction"),
+            build_kite_variant("Addiction Y25", [], "addiction"),
             build_kite_variant("Emotion Y26", ["emotion 26"], "emotion"),
             build_kite_variant("Obsession Y26", ["obsession 26"], "obsession"),
             build_kite_variant("Obsession Y27", ["obsession 27"], "obsession"),
             build_kite_variant("Obsession Big Air Y28",
                                ["obsession y28", "obsession big air y28", "big air obsession y28"],
                                "obsession_big_air"),
+            build_kite_variant("Passion Y26", ["passion 26"], "passion"),
+            build_kite_variant("Passion Y27", ["passion 27"], "passion"),
+            build_kite_variant("Passion Y28", ["passion 28"], "passion"),
             build_kite_variant("Religion Y27", [], "religion"),
             build_kite_variant("Vision Y27", [], "vision"),
         ]
@@ -333,11 +366,32 @@ brands_and_models = [
     {
         "slug": "reedin",
         "name": "Reedin",
-        "variants": []
+        "variants": [
+            build_kite_variant("Supermodel HTF", ["super model htf"], "supermodel_htf"),
+            build_kite_variant("Supermodel", ["super model"], "supermodel"),
+            build_kite_variant("Supermodel V2", ["super model v2"], "supermodel"),
+            build_kite_variant("Supermodel V3", ["super model v3"], "supermodel"),
+        ]
     },
     {
         "slug": "slingshot",
         "name": "Slingshot",
-        "variants": []
+        "variants": [
+            build_kite_variant("Code V1", [], "code"),
+            build_kite_variant("Ghost V2", [], "ghost"),
+            build_kite_variant("Machine V1", [], "machine"),
+            build_kite_variant("Machine V2", [], "machine"),
+            build_kite_variant("Machine LW V2", [], "machine_lw"),
+            build_kite_variant("Rally GT", [], "rally_gt"),
+            build_kite_variant("Rally GT V2", ["rally gt v.2"], "rally_gt"),
+            build_kite_variant("RPM V12", [], "rpm"),
+            build_kite_variant("RPX V1", [], "rpx"),
+            build_kite_variant("SST V5", ["sst v.5"], "sst"),
+            build_kite_variant("SST V6", ["sst v.6"], "sst"),
+            build_kite_variant("SST V7", ["sst v.7"], "sst"),
+            build_kite_variant("UFO", ["ufo v.1","ufo v1"], "ufo"),
+            build_kite_variant("UFO V2", [], "ufo"),
+            build_kite_variant("UFO V2 LTD", [], "ufo"),
+        ]
     },
 ]

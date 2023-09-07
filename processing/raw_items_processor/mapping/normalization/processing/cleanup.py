@@ -19,7 +19,8 @@ random_keywords_in_order = [
     "AILE DE SURF",
     "aile de kitesurf",
     "(copie)",
-    "NUE"
+    "NUE",
+    "(new!)"
 ]
 
 def replace_string_ignore_case(source_string, keyword_to_replace, rep_with):
