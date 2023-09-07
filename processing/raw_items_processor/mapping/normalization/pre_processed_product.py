@@ -111,7 +111,7 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
             color=kv.attributes.get('color', None),
             images=kv.images,
             in_stock=kv.in_stock,
-            url=kv.url,
+            url=item.url if kv.url is None else kv.url,
             name=variant_name,
         )
 
