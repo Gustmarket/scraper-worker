@@ -4,11 +4,12 @@ from celery.utils.log import get_task_logger
 
 from processing.raw_items_processor.mapping.normalization.models.item import NormalizedItem, \
     NormalizedItemVariant
-from processing.raw_items_processor.mapping.normalization.processing.cleanup import replace_string_word_ignore_case
+from processing.raw_items_processor.mapping.normalization.processing.cleanup import replace_string_word_ignore_case, \
+    replace_string_ignore_case
 from processing.raw_items_processor.mapping.normalization.processing.processing import extract_brand_model_info, \
     extract_and_cleanup_kite_size
 from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct
-from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none
+from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none, filter_none
 
 logger = get_task_logger(__name__)
 
@@ -88,9 +89,17 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
             if variant_labels is None:
                 variant_labels = []
             # todo: extract common fn
-            variant_labels = list(filter(lambda x: x.endswith('m') or x.endswith('m²'), variant_labels))
-            if len(variant_labels) > 0:
-                size = variant_labels[0]
+
+            def map_variant_label_to_size_or_none(raw):
+                mapped = replace_string_ignore_case(raw, "m²", "")
+                mapped = replace_string_ignore_case(mapped, "sqm", "")
+                mapped = replace_string_ignore_case(mapped, "m", "")
+                mapped = mapped.lower().strip()
+                return cleanup_size(mapped)
+
+            size_variant_labels = filter_none(list(map(map_variant_label_to_size_or_none, variant_labels)))
+            if len(size_variant_labels) > 0:
+                size = size_variant_labels[0]
         size = cleanup_size(size)
         variant_name = kv.name
         if type(variant_name) == "list" and len(variant_name) > 0:
