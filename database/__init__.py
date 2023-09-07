@@ -47,6 +47,7 @@ def upsert_apify_run(run):
 
 def get_unprocessed_raw_items():
     return get_model('raw_items').find({
+        "type": {'$ne': 'OUT_OF_STOCK'},
         '$or': [
             {
                 'processed': False
@@ -62,7 +63,23 @@ def get_unprocessed_raw_items():
 
 def get_out_of_stock_raw_items():
     return get_model('raw_items').find({
-        'type': 'OUT_OF_STOCK'
+        'type': 'OUT_OF_STOCK',
+    })
+
+
+def get_unprocessed_out_of_stock_raw_items():
+    return get_model('raw_items').find({
+        'type': 'OUT_OF_STOCK',
+        '$or': [
+            {
+                'processed': False
+            },
+            {
+                'processed': {
+                    '$exists': False
+                }
+            }
+        ]
     })
 
 

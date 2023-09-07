@@ -169,6 +169,37 @@ def upsert_product_offers():
 
 
 def process_out_of_stock_raw_items():
+    out_of_stock = database.get_unprocessed_out_of_stock_raw_items()
+
+    item_ids = []
+    url_hashes = []
+    for item in out_of_stock:
+        item_ids.append(item["_id"])
+        url_hashes.append(item['hash'])
+
+    logger.info(f'loaded {len(url_hashes)} out of stock items')
+    database.get_model('product_offers').update_many({
+        'offer_hash': {
+            '$in': url_hashes
+        }
+    }, {
+        '$set': {
+            'in_stock': False
+        }
+    })
+
+    database.get_model('raw_items').update_many({
+        '_id': {
+            '$in': item_ids
+        }
+    }, {
+        '$set': {
+            'processed': True
+        }
+    })
+
+
+def delete_out_of_stock_raw_items():
     out_of_stock = database.get_out_of_stock_raw_items()
 
     item_ids = []
@@ -239,8 +270,6 @@ def cleanup_inexsistent_items():
                 '$in': item_hashes
             }
         })
-
-
 
 
 def chunk_array(array, chunk_size):
