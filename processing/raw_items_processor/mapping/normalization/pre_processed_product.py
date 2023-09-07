@@ -27,7 +27,8 @@ def get_internal_sku(year, brand_slug, name):
     internal_sku = internal_sku + '-'
     # todo: get slug for model
     if name is not None:
-        internal_sku = internal_sku + name.lower().replace('  ', ' ').replace(' ', '_').replace('/', '_')
+        internal_sku = (internal_sku + name.lower().replace('  ', ' ')
+                        .replace(' ', '_').replace('/', '_').replace('?', '').replace('!', ''))
     else:
         internal_sku = internal_sku + 'noname'
     return internal_sku
