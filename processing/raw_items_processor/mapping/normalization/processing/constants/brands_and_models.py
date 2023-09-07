@@ -9,6 +9,7 @@ def build_kite_variant(name, variants=None, unique_model_identifier=None, year=N
     }
 
 
+
 brands_and_models = [
     {
         "slug": "airush",
@@ -302,7 +303,8 @@ brands_and_models = [
     {
         "slug": "ozone",
         "name": "Ozone",
-        "variants": [
+        "variants": [],
+        "kites": [
             build_kite_variant("Alpha V1", [], "alpha"),
             build_kite_variant("Alpha V2", [], "alpha"),
             build_kite_variant("AMP V1", [], "amp"),
@@ -366,7 +368,8 @@ brands_and_models = [
     {
         "slug": "reedin",
         "name": "Reedin",
-        "variants": [
+        "variants": [],
+        "kites": [
             build_kite_variant("Supermodel HTF", ["super model htf"], "supermodel_htf"),
             build_kite_variant("Supermodel", ["super model"], "supermodel"),
             build_kite_variant("Supermodel V2", ["super model v2"], "supermodel"),
@@ -376,7 +379,8 @@ brands_and_models = [
     {
         "slug": "slingshot",
         "name": "Slingshot",
-        "variants": [
+        "variants": [],
+        "kites": [
             build_kite_variant("Code V1", [], "code"),
             build_kite_variant("Ghost V2", [], "ghost"),
             build_kite_variant("Machine V1", [], "machine"),
