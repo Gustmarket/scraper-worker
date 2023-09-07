@@ -196,7 +196,7 @@ def extract_brand_model_info(raw_brand, raw_name):
             model_name = replace_string_ignore_case(model_name, keyword, "")
 
     model_info = extract_model(brand_slug, model_name)
-    model_name = model_info["name"]
+    model_name = model_info["name"].strip()
     model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
     return {

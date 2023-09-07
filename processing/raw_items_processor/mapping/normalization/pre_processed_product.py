@@ -17,14 +17,12 @@ logger = get_task_logger(__name__)
 def get_internal_sku(year, brand_slug, name):
     internal_sku = ''
     if year is not None:
-        internal_sku = internal_sku + year
-    else:
-        internal_sku = internal_sku + 'noyear'
+        internal_sku = internal_sku + str(year)
     internal_sku = internal_sku + '-'
     if brand_slug is not None:
         internal_sku = internal_sku + brand_slug
     else:
-        internal_sku = internal_sku + 'nobrand'
+        internal_sku = internal_sku + 'other'
     internal_sku = internal_sku + '-'
     # todo: get slug for model
     if name is not None:
