@@ -71,10 +71,18 @@ async def get_one_expired_product_url_and_update(playwright_context):
     product_urls_model = database.get_model("product_urls")
     product_url = product_urls_model.find_one_and_update({
         'disabled': {'$ne': True},
-        '$or': [
-            {'next_update': {'$exists': False}},
-            {'next_update': {'$lt': datetime.now()}}
-        ]
+
+        '$and': [
+            {'$or': [
+                {'error_count': {'$lt': 5}, },
+                {'error_count': {'$exists': False}, }
+            ]},
+            {
+                '$or': [
+                    {'next_update': {'$exists': False}},
+                    {'next_update': {'$lt': datetime.now()}}
+                ]
+            }]
     }, [{
         '$set': {
             'next_update': {'$add': [
@@ -90,6 +98,7 @@ async def get_one_expired_product_url_and_update(playwright_context):
         await scrape_and_save_product(product_url, playwright_context)
         product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
+                                          'error_count': 0,
                                           'last_error': None,
                                           'last_error_date': None,
                                       }},
