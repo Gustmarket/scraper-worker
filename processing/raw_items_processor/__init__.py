@@ -198,6 +198,16 @@ def process_out_of_stock_raw_items():
         }
     })
 
+    database.get_model('product_urls').update_many({
+        'hash': {
+            '$in': url_hashes
+        }
+    }, {
+        '$set': {
+            'out_of_stock': True
+        }
+    })
+
 
 def delete_out_of_stock_raw_items():
     out_of_stock = database.get_out_of_stock_raw_items()

@@ -49,6 +49,7 @@ async def scrape_and_save_product(product_url, playwright_context):
         data = (None, None)
 
     (product, product_type) = data
+
     if product is None:
         result = {
             'type': "OUT_OF_STOCK"
@@ -63,6 +64,7 @@ async def scrape_and_save_product(product_url, playwright_context):
         'hash': url_hash,
         'url': url,
         'loaded_url': url,
+        'processed': False,
         **result
     }}, upsert=True)
 
@@ -70,6 +72,7 @@ async def scrape_and_save_product(product_url, playwright_context):
 async def get_one_expired_product_url_and_update(playwright_context):
     product_urls_model = database.get_model("product_urls")
     product_url = product_urls_model.find_one_and_update({
+        'out_of_stock': {'$ne': True},
         'disabled': {'$ne': True},
 
         '$and': [
