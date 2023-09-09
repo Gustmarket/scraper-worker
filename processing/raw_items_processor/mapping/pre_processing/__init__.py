@@ -4,6 +4,7 @@ from processing.raw_items_processor.mapping.pre_processing.kitemana import from_
 from processing.raw_items_processor.mapping.pre_processing.microdata import map_microdata_variants_item, \
     map_microdata_item
 from processing.raw_items_processor.mapping.pre_processing.shopify import from_raw_item_shopify
+from processing.raw_items_processor.mapping.pre_processing.zephcontrol import from_raw_item_zephcontrol
 
 
 class PreProcessor(DataProcessor):
@@ -38,6 +39,11 @@ class PreProcessor(DataProcessor):
             })
         elif crawled_item_type == 'FACEBOOK_GROUP_POST':
             pre_processed = FacebookPreProcessedItem.from_raw_item(item['item'])
+        elif crawled_item_type == 'ZEPHCONTROL_PRODUCT':
+            pre_processed = from_raw_item_zephcontrol({
+                **item['item'],
+                'url': item['url'], }
+            )
 
         if pre_processed is not None:
             return {

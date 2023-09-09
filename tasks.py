@@ -140,3 +140,4 @@ async def schedule_url_batch_async():
             logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
 
+re_process_source_raw_items.delay('zephcontrol.com')

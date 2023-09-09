@@ -13,7 +13,8 @@ def normalize_pre_processed_item(item):
     elif (crawled_item_type in ['MICRODATA_VARIANTS_ITEM',
                                 'MICRODATA_ITEM',
                                 'SHOPIFY_PRODUCT',
-                                'KITEMANA_PRODUCT']):
+                                'KITEMANA_PRODUCT',
+                                'ZEPHCONTROL_PRODUCT']):
         mapped = normalize_pre_processed_product(PreProcessedProduct.from_json(item['item']))
         if mapped is not None:
             normalized_items = [mapped.to_json()]
