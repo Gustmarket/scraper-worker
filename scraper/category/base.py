@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 
 import database
@@ -14,7 +15,9 @@ async def push_product_urls(scraped_url, source, urls, user_data):
             'source': source,
             'condition': user_data.get('condition', None),
             'category': user_data.get('category', None),
-            'hash': hashlib.sha256(url.encode("UTF-8")).hexdigest()
+            'hash': hashlib.sha256(url.encode("UTF-8")).hexdigest(),
+            'out_of_stock': False,
+            'updated_at': datetime.datetime.utcnow()
         }
 
     url_posts = list(map(map_url, urls))

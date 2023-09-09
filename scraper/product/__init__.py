@@ -74,7 +74,6 @@ async def get_one_expired_product_url_and_update(playwright_context):
     product_url = product_urls_model.find_one_and_update({
         'out_of_stock': {'$ne': True},
         'disabled': {'$ne': True},
-
         '$and': [
             {'$or': [
                 {'error_count': {'$lt': 5}, },
@@ -101,6 +100,7 @@ async def get_one_expired_product_url_and_update(playwright_context):
         await scrape_and_save_product(product_url, playwright_context)
         product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
+                                          'updated_at': datetime.utcnow(),
                                           'error_count': 0,
                                           'last_error': None,
                                           'last_error_date': None,
@@ -110,6 +110,7 @@ async def get_one_expired_product_url_and_update(playwright_context):
         logger.exception('error while scraping product')
         product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
+                                          'updated_at': datetime.utcnow(),
                                           'last_error': str(e),
                                           'last_error_date': datetime.now(),
                                           'next_update': datetime.now() + timedelta(hours=1)
