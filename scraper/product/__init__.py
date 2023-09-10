@@ -9,7 +9,7 @@ from scraper.product.handlers.coronation_industries import coronation_industries
 from scraper.product.handlers.flysurf import flysurf
 from scraper.product.handlers.glissattitude import glissattitude
 from scraper.product.handlers.kitemana import kitemana
-from scraper.product.handlers.kiteshopworld import kiteshopworld
+from scraper.product.handlers.kiteworldshop import kiteworldshop
 from scraper.product.handlers.magasin_glissevolution import magasin_glissevolution
 from scraper.product.handlers.side_shore import side_shore
 from scraper.product.handlers.surfpirates import surfpirates
@@ -23,7 +23,7 @@ product_route_handlers = {
     'you-love-it.eu': you_love_it,
     'coronation-industries.de': coronation_industries,
     'kitemana.com': kitemana,
-    'kiteshopworld.com': kiteshopworld,
+    'kiteworldshop.com': kiteworldshop,
     'glissattitude.com': glissattitude,
     'surfpirates.de': surfpirates,
     'magasin-glissevolution.com': magasin_glissevolution,

@@ -1,3 +1,5 @@
+from celery.utils.log import get_task_logger
+
 from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
 from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct, \
     PreProcessedProductVariant
@@ -6,9 +8,9 @@ from processing.raw_items_processor.mapping.pre_processing.microdata.microdata i
 from processing.raw_items_processor.mapping.pre_processing.microdata.utils import better_map
 from processing.raw_items_processor.mapping.utils import flatten_list, filter_none, uniq_filter_none
 
-
-from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
+
+
 def map_correct_price(price, price_currency, list_price):
     price_result = GustmarketPrice.from_price_string(price, price_currency)
 
@@ -101,9 +103,6 @@ def map_microdata_variants_item(crawled_item):
 # todo: improve this shit as well
 def map_microdata_item(crawled_item):
     extra_data = crawled_item.get('extra_data', {})
-    raw_variants = extra_data.get('variants')
-    if raw_variants is None or len(raw_variants) == 0:
-        return None
 
     products = filter_none(map_product_with_offers_from_crawled_item(crawled_item))
     if len(products) == 0:
@@ -125,9 +124,33 @@ def map_microdata_item(crawled_item):
             }
         )
 
-    variants = list(map(map_variant, raw_variants))
+    raw_variants = extra_data.get('variants')
+    if raw_variants is not None and len(raw_variants) > 0:
+        variants = list(map(map_variant, raw_variants))
+    elif len(products) == 1:
+        def map_offer(x):
+            return PreProcessedProductVariant(
+                id=None,
+                name=None,
+                name_variants=[],
+                images=x.get('images', []),
+                url=x.get('url'),
+                # torto: fix this shit
+                in_stock=x.get('availability') is None or "InStock" in x.get('availability',
+                                                                             '') or "LimitedAvailability" in x.get(
+                    'availability', ''),
+                price=map_correct_price(x.get('price'), x.get('price_currency'), x.get('list_price')),
+                attributes=x.get('attributes')
+            )
+
+        variants = list(map(map_offer, products[0].get('offers', [])))
+    else:
+        return None
 
     mapped = extract_brands_and_names_from_products(products)
+
+    variant_images = flatten_list(list(map(lambda o: o.images, variants)))
+    images = uniq_filter_none(variant_images)
 
     return PreProcessedProduct(
         id=crawled_item.get('id'),
@@ -138,5 +161,5 @@ def map_microdata_item(crawled_item):
         category='HARDCODED_KITE',
         condition=None,
         variants=variants,
-        images=[],
+        images=images,
     )

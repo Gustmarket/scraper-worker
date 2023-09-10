@@ -8,15 +8,22 @@ def _map_json_ld_product(microdata_item, extra_data):
     def map_offer(offer):
         if offer is None:
             return {}
-        url = extra_data.get('url')
+        offer_extra_data = offer.get('extra_data')
+        if offer_extra_data is None:
+            offer_extra_data = {}
+        offer_extra_data = {
+            **extra_data,
+            **offer_extra_data
+        }
+        url = offer_extra_data.get('url')
         if url is None:
             url = better_map(offer.get('url'))
-        price = extra_data.get('price')
+        price = offer_extra_data.get('price')
         if price is None:
             price = offer.get('price')
 
         return {
-            "images": better_map(microdata_item.get('image')),
+            "images": better_map([microdata_item.get('image'), offer.get('image')]),
             "url": url,
             "sku": better_map(offer.get('sku')),
             "availability": better_map(offer.get('availability')),
@@ -24,9 +31,9 @@ def _map_json_ld_product(microdata_item, extra_data):
             "list_price": better_map(offer.get('listPrice')),
             "price_currency": better_map(offer.get('priceCurrency')),
             "attributes": {
-                "size": extra_data.get('size'),
-                "color": extra_data.get('color'),
-                "variant_labels": extra_data.get('variant_labels'),
+                "size": offer_extra_data.get('size'),
+                "color": offer_extra_data.get('color'),
+                "variant_labels": offer_extra_data.get('variant_labels'),
             }
         }
     offers = microdata_item.get('offers', [])
