@@ -4,10 +4,13 @@ import hashlib
 import database
 
 
-async def push_product_urls(scraped_url, source, urls, user_data):
-    if urls is None or len(urls) == 0:
+async def push_product_urls(scraped_url, source, raw_urls, user_data):
+    if raw_urls is None or len(raw_urls) == 0:
         return
-
+    if source == 'matos.be':
+        urls = list(map(lambda x: x.split('#')[0], raw_urls))
+    else:
+        urls = raw_urls
     def map_url(url):
         return {
             'url': url,
