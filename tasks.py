@@ -63,6 +63,7 @@ def re_process_source_raw_items(source):
     })
     process_raw_items_task.delay()
 
+
 @app.task
 def re_process_brand_raw_items(brand_slug):
     normalized_items_for_brand = database.get_model('normalized_items').find({
@@ -85,12 +86,14 @@ def re_process_brand_raw_items(brand_slug):
 
     process_raw_items_task.delay()
 
+
 @app.task
 def process_raw_items_task():
     nr_of_items = process_raw_items()
     if nr_of_items > 0:
         normalize_pre_processed_items_task.delay()
     process_out_of_stock_raw_items_task.delay()
+
 
 @app.task
 def process_out_of_stock_raw_items_task():
@@ -115,8 +118,9 @@ def upsert_product_offers_task():
 
 
 @app.task
-def process_out_of_stock_raw_items_task():
+def delete_out_of_stock_raw_items_task():
     delete_out_of_stock_raw_items()
+
 
 @app.task
 def cleanup_inexsistent_items_task():
