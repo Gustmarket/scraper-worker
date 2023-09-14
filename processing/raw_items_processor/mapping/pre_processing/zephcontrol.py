@@ -5,9 +5,10 @@ from processing.raw_items_processor.mapping.utils import uniq_filter_none
 
 def from_raw_item_zephcontrol(crawled_item):
     base_price = crawled_item['price']
+    tax_rate = crawled_item['taxRate']
 
     def map_variant(variant):
-        price = base_price + variant['price']
+        price = round(base_price + variant['price'] + (variant['price'] * (tax_rate  / 100)))
         return PreProcessedProductVariant(
             id=str(variant["id"]),
             url=crawled_item['url'],
