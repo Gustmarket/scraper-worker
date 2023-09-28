@@ -201,7 +201,13 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
             return
         if crawlable_entity['type'] == "gustmarket-category-scraper":
             for config in crawlable_entity['config']['start_urls']:
-                await scrape_category(config['url'], config.get('user_data', {}), playwright_context)
+                exceptions = []
+                try:
+                    await scrape_category(config['url'], config.get('user_data', {}), playwright_context)
+                except Exception as e:
+                    exceptions.append(e)
+                if len(exceptions) > 0:
+                    raise exceptions[0]
         elif crawlable_entity['type'] == "facebook-group":
             # todo: probably still apify
             # run = apify.start_facebook_actor(crawlable_entity['config']['group_id'])

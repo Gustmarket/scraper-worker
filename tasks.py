@@ -30,7 +30,6 @@ app.conf.timezone = 'UTC'
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch every 10m')
     sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch_2 every 10m')
-    # # Executes every Monday morning at 0:00 a.m.
     sender.add_periodic_task(
         crontab(hour=0, minute=0),
         schedule_crawlable_entity.s(),
@@ -132,7 +131,9 @@ async def schedule_crawlable_entity_async():
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
-        await get_one_expired_crawlable_entity_and_update(playwright_context)
+        for i in range(1, 3):
+            logger.info(f'schedule_url_batch_async: ${i}')
+            await get_one_expired_crawlable_entity_and_update(playwright_context)
 
 
 async def schedule_url_batch_async():
