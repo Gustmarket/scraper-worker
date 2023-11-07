@@ -32,7 +32,8 @@ def shopify_category_scraper(source):
                     'item': {
                         **product,
                         'url': f'{url}/products/{product["handle"]}'
-                    }
+                    },
+                    'processed': False
                 }}, upsert=True)
 
     return lambda url, enqueue_link, playwright_context, user_data: cat_s(url)
