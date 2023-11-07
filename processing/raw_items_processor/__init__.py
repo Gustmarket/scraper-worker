@@ -136,6 +136,7 @@ def upsert_product_offers():
                 "attributes": {
                     **base_offer['attributes'],
                     "size": variant.get("size"),
+                    "color": variant.get("color"),
                 },
                 "offer_url": variant.get("url"),
                 "offer_hash": normalized_item.get("hash"),
