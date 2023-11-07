@@ -9,13 +9,15 @@ def from_raw_item_zephcontrol(crawled_item):
 
     def map_variant(variant):
         price = round(base_price + variant['price'] + (variant['price'] * (tax_rate  / 100)))
+        quantity = variant.get('quantity')
+        in_stock = True if quantity is None else quantity > 0
         return PreProcessedProductVariant(
             id=str(variant["id"]),
             url=crawled_item['url'],
             price=GustmarketPrice.from_price_string(str(price), 'EUR'),
             name=None,
             name_variants=[],
-            in_stock=True,
+            in_stock=in_stock,
             images=[],
             attributes={
                 'size': variant['attributes'][0]['name']

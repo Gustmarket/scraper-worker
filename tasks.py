@@ -125,6 +125,10 @@ def delete_out_of_stock_raw_items_task():
 def cleanup_inexsistent_items_task():
     cleanup_inexsistent_items()
 
+@app.task
+def local_test_task():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(local_test_async())
 
 async def schedule_crawlable_entity_async():
     # todo: count before starting
@@ -144,3 +148,11 @@ async def schedule_url_batch_async():
         for i in range(1, 12):
             logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
+
+
+async def local_test_async():
+    # todo: count before starting
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch(headless=True)
+        playwright_context = await browser.new_context()
+        await get_one_expired_product_url_and_update(playwright_context)
