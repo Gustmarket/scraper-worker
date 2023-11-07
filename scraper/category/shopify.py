@@ -22,16 +22,18 @@ def shopify_category_scraper(source):
                 break
 
             for product in products:
-                url_hash = hashlib.sha256(url.encode("UTF-8")).hexdigest()
+                product_url = f'{url}/products/{product["handle"]}'
+                url_hash = hashlib.sha256(product_url.encode("UTF-8")).hexdigest()
+
                 database.get_model('raw_items').update_one({'hash': url_hash}, {'$set': {
                     'source': source,
                     'hash': url_hash,
-                    'url': f'{url}/products/{product["handle"]}',
-                    'loaded_url': f'{url}/products/{product["handle"]}',
+                    'url': product_url,
+                    'loaded_url': product_url,
                     'type': 'SHOPIFY_PRODUCT',
                     'item': {
                         **product,
-                        'url': f'{url}/products/{product["handle"]}'
+                        'url': product_url
                     },
                     'processed': False
                 }}, upsert=True)
