@@ -156,3 +156,6 @@ async def local_test_async():
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
         await get_one_expired_product_url_and_update(playwright_context)
+
+
+# process_raw_items_task.delay()

@@ -1,3 +1,3 @@
 #!/bin/sh
 source .env
-celery --app tasks beat --loglevel=info
+celery --app tasks beat -l debug

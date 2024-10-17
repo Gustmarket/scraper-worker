@@ -30,3 +30,4 @@ node_modules
 
 .env
 celerybeat-schedule
+celerybeat-schedule.db
