@@ -133,4 +133,5 @@ def from_raw_item_kitemana(crawled_item):
         images=images,
         category=category,
         condition=None,
+        subcategories=[]
     )

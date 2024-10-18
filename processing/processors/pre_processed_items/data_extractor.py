@@ -133,7 +133,7 @@ def extract_model(category, brand_slug, name):
 
     if category is "KITE" or category is None:
         brand_models = brand_with_models[0].get('kites', [])
-    elif category is "TWINTIP":
+    elif category is "KITEBOARD":
         brand_models = brand_with_models[0].get('twintip', [])
 
     if brand_models is None:

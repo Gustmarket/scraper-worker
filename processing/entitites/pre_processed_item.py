@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from processing.data.cleanup import replace_string_word_ignore_case
 from processing.data.utils import uniq_filter_none, flatten_list
 from processing.interfaces import BaseItem
 from processing.entitites.price import GustmarketPrice
@@ -94,21 +95,36 @@ class PreProcessedItem(BaseItem):
     def __hash__(self):
         return hash((self.id, self.name, self.brand, self.category, self.variants, self.images))
 
-    def get_all_name_variants(self):
-        variant_labels = uniq_filter_none(
-            flatten_list([v.attributes.get('variant_labels', []) for v in self.variants]))
+    def get_all_variant_labels(self):
+        all_variant_labels = uniq_filter_none(
+            flatten_list(list(map(lambda kv: kv.attributes.get('variant_labels', []), self.variants))))
+        all_variant_labels = uniq_filter_none(
+            flatten_list(list(map(lambda x: x.split(' '), all_variant_labels))))
+        return all_variant_labels
+
+    def get_all_cleaned_name_variants(self):
+        all_variant_labels = self.get_all_variant_labels()
         variant_name_variants = uniq_filter_none(
             flatten_list([v.name_variants for v in self.variants if hasattr(v, 'name_variants')]))
         variant_names = [v.name for v in self.variants if v.name]
-        
+
         all_variants = (
             [self.name] +
             self.name_variants +
-            variant_labels +
             variant_name_variants +
-            variant_names
+            variant_names +
+            all_variant_labels
         )
-        
+
+        cleaned_variants = []
+        for variant in all_variants:
+            cleaned_variant = variant
+            for variant_label in all_variant_labels:
+                cleaned_variant = replace_string_word_ignore_case(cleaned_variant, variant_label, '')
+            cleaned_variants.append(cleaned_variant.strip())
+
+        all_variants = cleaned_variants
+
         return uniq_filter_none(all_variants)
 
     def to_json(self):

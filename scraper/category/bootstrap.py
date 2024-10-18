@@ -6,7 +6,7 @@ import hashlib
 logger = get_task_logger(__name__)
 
 
-def create_entity_to_bootstrap(url, category, condition):
+def create_entity_to_bootstrap(url, category, condition, subcategories = None):
     return {
         "hash": hashlib.sha256(
             (url.encode("UTF-8") if url else b'') +
@@ -18,6 +18,7 @@ def create_entity_to_bootstrap(url, category, condition):
         "config": {
             "url": url,
             "user_data": {
+                "subcategories": subcategories,
                 "condition": condition,
                 "category": category
             }
@@ -38,16 +39,16 @@ entities_to_bootstrap = [
     create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/?p=1", "KITE", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITE", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITE", "USED"),
-    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "TWINTIP", None),
+    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "KITEBOARD", None, ["TWINTIP"]),
 ]
 
 
 async def bootstrap_crawlable_entities():
     crawlable_entities_model = database.get_model("crawlable_entities")
-    
+
     for entity in entities_to_bootstrap:
         existing_entity = crawlable_entities_model.find_one({"hash": entity["hash"]})
-        
+
         if existing_entity is None:
             logger.info(f"Bootstrapping new crawlable entity: {entity['config']['url']}")
             crawlable_entities_model.insert_one({

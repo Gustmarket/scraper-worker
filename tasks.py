@@ -165,7 +165,7 @@ async def local_test_async():
 
 # bootstrap_crawlable_entities_task.delay()
 
-process_raw_items_task.delay()
+# process_raw_items_task.delay()
 
 # schedule_crawlable_entity.delay()
 

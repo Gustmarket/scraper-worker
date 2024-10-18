@@ -18,7 +18,7 @@ product_taxonomy = {
             "kite surfboard", "foilboard", "kiteboard deck", "freestyle board"
         ],
         "subcategories": {
-            "TWIN-TIP": ["twin-tip", "twintip", "freestyle board"],
+            "TWINTIP": ["twin-tip", "twintip", "freestyle board"],
             "SURFBOARD": ["surfboard", "kite surfboard", "directional"],
             "FOILBOARD": ["foilboard"]
         }

@@ -79,4 +79,5 @@ def from_raw_item_shopify(crawled_item):
         images=images,
         category=category,
         condition=condition,
+        subcategories=[]
     )

@@ -3,6 +3,7 @@ from celery.utils.log import get_task_logger
 
 from processing.entitites.normalized_item import NormalizedItemVariant, NormalizedItem
 from processing.entitites.pre_processed_item import PreProcessedItem
+from processing.processors.pre_processed_items.brander import brand_pre_processed_item
 from processing.processors.pre_processed_items.kite import map_kite_size
 from processing.data.cleanup import replace_string_ignore_case, \
     replace_string_word_ignore_case
@@ -46,27 +47,21 @@ def map_kite_variant_label_to_size_or_none(raw):
     mapped = mapped.lower().strip()
     return cleanup_size(mapped)
 
+
 def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
     if item.brand is None and item.name is None:
         logger.debug(f'none {item}')
         return None
 
-    item = categorise_pre_processed_item(item, parentAttributes.get('category'))
+    name_variants = item.get_all_cleaned_name_variants()
+    (category, subcategory) = categorise_pre_processed_item(name_variants, parentAttributes.get('category'))
+    item.category = category
+    item.subcategories = [subcategory] if subcategory else []
 
-    name = item.name
-    if name is None:
-        name = ''
-
-    all_variant_labels = uniq_filter_none(
-        flatten_list(list(map(lambda kv: kv.attributes.get('variant_labels', []), item.variants))))
-    all_variant_labels = uniq_filter_none(
-        flatten_list(list(map(lambda x: x.split(' '), all_variant_labels))))
-    if len(all_variant_labels) > 0:
-        for variant_label in all_variant_labels:
-            name = replace_string_word_ignore_case(name, variant_label, '')
+    name = name_variants[0]
 
     model_info = extract_brand_model_info(item.category, item.brand, name)
-    brand_slug = model_info["brand_slug"]
+    brand_slug = brand_pre_processed_item(item.brand, name_variants)
     brand_name = model_info["brand_name"]
     name = model_info["name"]
     year = model_info["year"]
@@ -80,7 +75,7 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
 
         if item.category is "KITE" or item.category is None:
             size = map_kite_size(variant_name, kv)
-        elif item.category is "TWINTIP":
+        elif item.category is "KITEBOARD":
             size = kv.attributes.get('size', None)
 
         return NormalizedItemVariant(

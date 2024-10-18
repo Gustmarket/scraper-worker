@@ -1,6 +1,8 @@
 from processing.entitites.pre_processed_item import PreProcessedItem
 from processing.processors.pre_processed_items.categoriser.taxonomy import product_taxonomy
 
+from thefuzz import process
+
 
 def get_category(text, parent_category=None):
     """
@@ -11,37 +13,43 @@ def get_category(text, parent_category=None):
     if parent_category and parent_category in product_taxonomy:
         return parent_category
 
+
+    highest_score = 0
+    highest_category = None
     # Search across all categories if no parent_category is provided or no match found within it
     for category, details in product_taxonomy.items():
-        for keyword in details["keywords"]:
-            if keyword in text:
-                return category
+        (matched_keyword, score) = process.extractOne(text, details["keywords"])
+        if score > highest_score:
+            highest_score = score
+            highest_category = category
 
-    # Return None if no category match is found
+    if highest_score > 89:
+        return highest_category
     return None
 
 def get_subcategory(combined_text, category):
     """
     Determines the subcategory within a main category by matching subcategory keywords in the combined text.
     """
+
+    highest_score = 0
+    highest_subcategory = None
     if category in product_taxonomy and "subcategories" in product_taxonomy[category]:
         for subcategory, sub_keywords in product_taxonomy[category]["subcategories"].items():
-            for sub_keyword in sub_keywords:
-                if sub_keyword in combined_text:
-                    return subcategory
-    
-    # Return None if no subcategory match is found
+            (matched_keyword, score) = process.extractOne(combined_text, sub_keywords)
+            if score > highest_score:
+                highest_score = score
+                highest_subcategory = subcategory
+
+    if highest_score > 89:
+        return highest_subcategory
     return None
 
-def categorise_pre_processed_item(pre_processed_item: PreProcessedItem, parent_category):
-    name_variants = " ".join(pre_processed_item.get_all_name_variants()).lower()
+def categorise_pre_processed_item(name_variants, parent_category):
     category = get_category(name_variants, parent_category)
     if not category:
         return "UNKNOWN"
     
-    # Step 2: Get the subcategory if applicable
     subcategory = get_subcategory(name_variants, category)
     
-    pre_processed_item.category = category
-    pre_processed_item.subcategories = [subcategory] if subcategory else []
-    return pre_processed_item
+    return (category, subcategory)

@@ -34,7 +34,8 @@ def from_raw_item_zephcontrol(crawled_item):
         variants=list(map(map_variant, crawled_item.get('productAttributes', []))),
         images=uniq_filter_none(list(map(lambda x: x.get('url'), crawled_item.get('images', [])))),
         category=None,
-        condition=None
+        condition=None,
+        subcategories=[]
     )
 
 
