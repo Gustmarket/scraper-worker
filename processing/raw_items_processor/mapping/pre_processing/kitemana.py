@@ -124,4 +124,6 @@ def from_raw_item_kitemana(crawled_item):
         variants=variants,
         images=images,
         condition=None,
+        defined_category=crawled_item['category'],
+        defined_condition=crawled_item['condition'],
     )

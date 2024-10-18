@@ -284,6 +284,8 @@ brands_and_models = [
             build_kite_variant("Reach"),
             build_kite_variant("Code Zero"),
             build_kite_variant("Orbit"),
+            build_kite_variant("Orbit Pro"),
+            build_kite_variant("Orbit Ultra"),
             build_kite_variant("Pulse"),
         ]
     },
@@ -382,6 +384,8 @@ brands_and_models = [
         "variants": [],
         "kites": [
             build_kite_variant("Code V1", [], "code"),
+            build_kite_variant("Code V2", [], "code"),
+            build_kite_variant("Code NXT", [], "code_nxt"),
             build_kite_variant("Ghost V2", [], "ghost"),
             build_kite_variant("Machine V1", [], "machine"),
             build_kite_variant("Machine V2", [], "machine"),

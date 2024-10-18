@@ -67,6 +67,8 @@ async def scrape_and_save_product(product_url, playwright_context):
         'url': url,
         'loaded_url': url,
         'processed': False,
+        'category': product_url['category'],
+        'condition': product_url['condition'],
         **result
     }}, upsert=True)
 
@@ -95,6 +97,7 @@ async def get_one_expired_product_url_and_update(playwright_context):
             ]}}
     }], sort=[("next_update", pymongo.ASCENDING)], return_document=ReturnDocument.AFTER)
 
+    logger.info(f"product_url: {product_url}")
     if product_url is None:
         return None
 

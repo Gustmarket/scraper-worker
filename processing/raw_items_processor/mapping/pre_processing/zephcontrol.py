@@ -31,10 +31,12 @@ def from_raw_item_zephcontrol(crawled_item):
         name_variants=[],
         url=crawled_item['url'],
         brand=crawled_item.get('brand', {}).get('name'),
-        category='HARDCODED_KITE',
         variants=list(map(map_variant, crawled_item.get('productAttributes', []))),
         images=uniq_filter_none(list(map(lambda x: x.get('url'), crawled_item.get('images', [])))),
+        category=None,
         condition=None,
+        defined_category=crawled_item['category'],
+        defined_condition=crawled_item['condition'],
     )
 
 

@@ -17,33 +17,24 @@ class PreProcessor(DataProcessor):
         crawled_item_type = item['type']
 
         pre_processed = None
+        item_to_preprocess = {
+                **item['item'],
+                'url': item['url'],
+                'category': item['category'],
+                'condition': item['condition'],
+        }
         if crawled_item_type == 'KITEMANA_PRODUCT':
-            pre_processed = from_raw_item_kitemana({
-                **item['item'],
-                'url': item['url'],
-            })
+            pre_processed = from_raw_item_kitemana(item_to_preprocess)
         elif crawled_item_type == 'MICRODATA_VARIANTS_ITEM':
-            pre_processed = map_microdata_variants_item({
-                **item['item'],
-                'url': item['url'],
-            })
+            pre_processed = map_microdata_variants_item(item_to_preprocess)
         elif crawled_item_type == 'MICRODATA_ITEM':
-            pre_processed = map_microdata_item({
-                **item['item'],
-                'url': item['url'],
-            })
+            pre_processed = map_microdata_item(item_to_preprocess)
         elif crawled_item_type == 'SHOPIFY_PRODUCT':
-            pre_processed = from_raw_item_shopify({
-                **item['item'],
-                'url': item['url'],
-            })
+            pre_processed = from_raw_item_shopify(item_to_preprocess)
         elif crawled_item_type == 'FACEBOOK_GROUP_POST':
-            pre_processed = FacebookPreProcessedItem.from_raw_item(item['item'])
+            pre_processed = FacebookPreProcessedItem.from_raw_item(item_to_preprocess)
         elif crawled_item_type == 'ZEPHCONTROL_PRODUCT':
-            pre_processed = from_raw_item_zephcontrol({
-                **item['item'],
-                'url': item['url'], }
-            )
+            pre_processed = from_raw_item_zephcontrol(item_to_preprocess)
 
         if pre_processed is not None:
             return {

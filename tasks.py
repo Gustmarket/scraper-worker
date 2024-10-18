@@ -12,7 +12,7 @@ from processing.raw_items_processor import process_raw_items, normalize_pre_proc
     cleanup_inexsistent_items, process_out_of_stock_raw_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
-
+from scraper.category.bootstrap import bootstrap_crawlable_entities
 app = Celery('tasks', broker=os.getenv("CELERY_BROKER_URL"))
 logger = get_task_logger(__name__)
 
@@ -130,6 +130,11 @@ def local_test_task():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(local_test_async())
 
+@app.task
+def bootstrap_crawlable_entities_task():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(bootstrap_crawlable_entities())
+
 async def schedule_crawlable_entity_async():
     # todo: count before starting
     async with async_playwright() as playwright:
@@ -145,7 +150,7 @@ async def schedule_url_batch_async():
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
-        for i in range(1, 12):
+        for i in range(1, 50):
             logger.info(f'schedule_url_batch_async: ${i}')
             await get_one_expired_product_url_and_update(playwright_context)
 
@@ -159,3 +164,4 @@ async def local_test_async():
 
 
 # process_raw_items_task.delay()
+bootstrap_crawlable_entities_task.delay()

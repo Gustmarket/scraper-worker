@@ -93,8 +93,10 @@ def map_microdata_variants_item(crawled_item):
         name_variants=mapped.get('name_variants'),
         brand=mapped.get('brand'),
         url=crawled_item['url'],
-        category='HARDCODED_KITE',
+        category=None,
         condition=None,
+        defined_category=crawled_item['category'],
+        defined_condition=crawled_item['condition'],
         variants=variants,
         images=images,
     )
@@ -158,8 +160,10 @@ def map_microdata_item(crawled_item):
         name_variants=mapped.get('name_variants'),
         brand=mapped.get('brand'),
         url=crawled_item['url'],
-        category='HARDCODED_KITE',
+        category=None,
         condition=None,
+        defined_category=crawled_item['category'],
+        defined_condition=crawled_item['condition'],
         variants=variants,
         images=images,
     )
