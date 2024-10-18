@@ -38,6 +38,7 @@ entities_to_bootstrap = [
     create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/?p=1", "KITE", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITE", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITE", "USED"),
+    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "TWINTIP", None),
 ]
 
 
