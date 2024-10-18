@@ -1,9 +1,15 @@
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
-from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct, \
-    PreProcessedProductVariant
-from processing.raw_items_processor.mapping.pre_processing.kitemana import try_to_get_float
-from processing.raw_items_processor.mapping.utils import uniq_filter_none
+from processing.entitites.price import GustmarketPrice
+from processing.entitites.pre_processed_item import PreProcessedItem, \
+    PreProcessedItemVariant
+from processing.data.utils import uniq_filter_none
 
+def try_to_get_float(value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except:
+        return None
 
 def _map_shopify_variant(variant, options_config):
     price = try_to_get_float(variant.get('price'))
@@ -24,7 +30,7 @@ def _map_shopify_variant(variant, options_config):
         if option_value is not None:
             attributes[option_name] = option_value
 
-    return PreProcessedProductVariant(
+    return PreProcessedItemVariant(
         id=str(variant["id"]),
         url=str(variant["id"]),
         price=GustmarketPrice.from_price_string(price, 'EUR'),
@@ -63,7 +69,7 @@ def from_raw_item_shopify(crawled_item):
     if images is not None:
         images = uniq_filter_none(list(map(lambda i: i.get('src'), images)))
 
-    return PreProcessedProduct(
+    return PreProcessedItem(
         id=crawled_item['id'],
         name=title_,
         name_variants=[title_],

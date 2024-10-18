@@ -1,5 +1,5 @@
-from processing.raw_items_processor.mapping.pre_processing.microdata.utils import better_map
-from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none
+from processing.processors.raw_items.microdata.utils import better_map
+from processing.data.utils import flatten_list, uniq_filter_none
 
 
 def _map_microdata_product(microdata_item, extra_data):

@@ -1,10 +1,10 @@
 from abc import abstractmethod
 
-from processing.raw_items_processor.mapping.base import BaseItem
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
+from processing.interfaces import BaseItem
+from processing.entitites.price import GustmarketPrice
 
 
-class PreProcessedProductVariant:
+class PreProcessedItemVariant:
     price: GustmarketPrice
 
     #todo: maybe directly map attributes instead of size, color and create KiteAttributes, BoardAttributes, etc..
@@ -45,7 +45,7 @@ class PreProcessedProductVariant:
 
     @staticmethod
     def from_json(json):
-        return PreProcessedProductVariant(
+        return PreProcessedItemVariant(
             id=json.get('id'),
             url=json.get('url'),
             price=GustmarketPrice.from_json(json.get('price')),
@@ -57,7 +57,7 @@ class PreProcessedProductVariant:
         )
 
 
-class PreProcessedProduct(BaseItem):
+class PreProcessedItem(BaseItem):
     id: str
     name: str
     name_variants: [str]
@@ -67,7 +67,7 @@ class PreProcessedProduct(BaseItem):
     condition: str
     scraped_category: str
     scraped_condition: str
-    variants: [PreProcessedProductVariant]
+    variants: [PreProcessedItemVariant]
     images: [str]
 
     def __init__(self, id, name, name_variants, url, brand, category, condition, scraped_category, scraped_condition, variants, images):
@@ -112,7 +112,7 @@ class PreProcessedProduct(BaseItem):
 
     @staticmethod
     def from_json(json):
-        return PreProcessedProduct(
+        return PreProcessedItem(
             id=json['id'],
             url=json['url'],
             name=json['name'],
@@ -122,12 +122,12 @@ class PreProcessedProduct(BaseItem):
             category=json.get('category'),
             scraped_category=json.get('scraped_category'),
             scraped_condition=json.get('scraped_condition'),
-            variants=list(map(PreProcessedProductVariant.from_json, json['variants'])),
+            variants=list(map(PreProcessedItemVariant.from_json, json['variants'])),
             images=json.get('images'),
         )
 
 
-class PreProcessedProductImpl(PreProcessedProduct):
+class PreProcessedItemImpl(PreProcessedItem):
 
     @staticmethod
     @abstractmethod

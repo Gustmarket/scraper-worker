@@ -3,11 +3,10 @@ import re
 from celery.utils.log import get_task_logger
 from thefuzz import process, fuzz
 
-from processing.raw_items_processor.mapping.normalization.processing.cleanup import \
-    cleanup_name_string_by_keywords, replace_string_ignore_case, replace_string_word_ignore_case
-from processing.raw_items_processor.mapping.normalization.processing.constants.brands_and_models import \
-    brands_and_models
-from processing.raw_items_processor.mapping.utils import flatten_list
+from processing.data.cleanup import cleanup_name_string_by_keywords, replace_string_ignore_case, \
+    replace_string_word_ignore_case
+from processing.data.constants.brands_and_models import brands_and_models
+from processing.data.utils import flatten_list
 
 logger = get_task_logger(__name__)
 

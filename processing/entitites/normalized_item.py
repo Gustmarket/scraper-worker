@@ -1,5 +1,5 @@
-from processing.raw_items_processor.mapping.base import BaseItem
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
+from processing.interfaces import BaseItem
+from processing.entitites.price import GustmarketPrice
 
 
 class NormalizedItemVariant(BaseItem):

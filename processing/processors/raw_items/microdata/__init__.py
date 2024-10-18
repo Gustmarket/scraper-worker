@@ -1,12 +1,12 @@
 from celery.utils.log import get_task_logger
 
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
-from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct, \
-    PreProcessedProductVariant
-from processing.raw_items_processor.mapping.pre_processing.microdata.json_ld import map_json_ld
-from processing.raw_items_processor.mapping.pre_processing.microdata.microdata import map_microdata
-from processing.raw_items_processor.mapping.pre_processing.microdata.utils import better_map
-from processing.raw_items_processor.mapping.utils import flatten_list, filter_none, uniq_filter_none
+from processing.entitites.price import GustmarketPrice
+from processing.entitites.pre_processed_item import PreProcessedItem, \
+    PreProcessedItemVariant
+
+from processing.processors.raw_items.microdata.json_ld import map_json_ld
+from processing.processors.raw_items.microdata.microdata import map_microdata
+from processing.data.utils import flatten_list, filter_none, uniq_filter_none
 
 logger = get_task_logger(__name__)
 
@@ -72,7 +72,7 @@ def map_microdata_variants_item(crawled_item):
     offer_images = flatten_list(list(map(lambda o: o.get('images', []), all_offers)))
     images = uniq_filter_none(product_images + offer_images)
 
-    variants = list(map(lambda x: PreProcessedProductVariant(
+    variants = list(map(lambda x: PreProcessedItemVariant(
         id=x.get('id', x.get('sku')),
         url=x.get('url'),
         price=map_correct_price(x.get('price'), x.get('price_currency'), x.get('list_price')),
@@ -87,7 +87,7 @@ def map_microdata_variants_item(crawled_item):
 
     mapped = extract_brands_and_names_from_products(products)
 
-    return PreProcessedProduct(
+    return PreProcessedItem(
         id=crawled_item.get('id'),
         name=mapped.get('name'),
         name_variants=mapped.get('name_variants'),
@@ -111,7 +111,7 @@ def map_microdata_item(crawled_item):
         return None
 
     def map_variant(variant):
-        return PreProcessedProductVariant(
+        return PreProcessedItemVariant(
             id=None,
             name=None,
             name_variants=[],
@@ -131,7 +131,7 @@ def map_microdata_item(crawled_item):
         variants = list(map(map_variant, raw_variants))
     elif len(products) == 1:
         def map_offer(x):
-            return PreProcessedProductVariant(
+            return PreProcessedItemVariant(
                 id=None,
                 name=None,
                 name_variants=[],
@@ -154,7 +154,7 @@ def map_microdata_item(crawled_item):
     variant_images = flatten_list(list(map(lambda o: o.images, variants)))
     images = uniq_filter_none(variant_images)
 
-    return PreProcessedProduct(
+    return PreProcessedItem(
         id=crawled_item.get('id'),
         name=mapped.get('name'),
         name_variants=mapped.get('name_variants'),

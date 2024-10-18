@@ -1,10 +1,10 @@
-from processing.raw_items_processor.mapping.base import DataProcessor
-from processing.raw_items_processor.mapping.pre_processing.facebook import FacebookPreProcessedItem
-from processing.raw_items_processor.mapping.pre_processing.kitemana import from_raw_item_kitemana
-from processing.raw_items_processor.mapping.pre_processing.microdata import map_microdata_variants_item, \
+from processing.interfaces import DataProcessor
+from processing.processors.raw_items.facebook import FacebookPreProcessedItem
+from processing.processors.raw_items.kitemana import from_raw_item_kitemana
+from processing.processors.raw_items.microdata import map_microdata_variants_item, \
     map_microdata_item
-from processing.raw_items_processor.mapping.pre_processing.shopify import from_raw_item_shopify
-from processing.raw_items_processor.mapping.pre_processing.zephcontrol import from_raw_item_zephcontrol
+from processing.processors.raw_items.shopify import from_raw_item_shopify
+from processing.processors.raw_items.zephcontrol import from_raw_item_zephcontrol
 
 
 class PreProcessor(DataProcessor):
@@ -18,10 +18,10 @@ class PreProcessor(DataProcessor):
 
         pre_processed = None
         item_to_preprocess = {
-                **item['item'],
-                'url': item['url'],
-                'category': item['category'],
-                'condition': item.get('condition'),
+            **item['item'],
+            'url': item['url'],
+            'category': item['category'],
+            'condition': item.get('condition'),
         }
         if crawled_item_type == 'KITEMANA_PRODUCT':
             pre_processed = from_raw_item_kitemana(item_to_preprocess)

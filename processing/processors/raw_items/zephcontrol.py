@@ -1,7 +1,7 @@
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
-from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct, PreProcessedProductVariant
-from processing.raw_items_processor.mapping.utils import uniq_filter_none
-
+from processing.entitites.price import GustmarketPrice
+from processing.entitites.pre_processed_item import PreProcessedItem, \
+    PreProcessedItemVariant
+from processing.data.utils import uniq_filter_none
 
 def from_raw_item_zephcontrol(crawled_item):
     base_price = crawled_item['price']
@@ -11,7 +11,7 @@ def from_raw_item_zephcontrol(crawled_item):
         price = round(base_price + variant['price'] + (variant['price'] * (tax_rate  / 100)))
         quantity = variant.get('quantity')
         in_stock = True if quantity is None else quantity > 0
-        return PreProcessedProductVariant(
+        return PreProcessedItemVariant(
             id=str(variant["id"]),
             url=crawled_item['url'],
             price=GustmarketPrice.from_price_string(str(price), 'EUR'),
@@ -25,7 +25,7 @@ def from_raw_item_zephcontrol(crawled_item):
         )
 
 
-    return PreProcessedProduct(
+    return PreProcessedItem(
         id=crawled_item['id'],
         name=crawled_item['name'],
         name_variants=[],

@@ -7,9 +7,9 @@ from celery.utils.log import get_task_logger
 from playwright.async_api import async_playwright
 
 import database
-from processing.raw_items_processor import process_raw_items, normalize_pre_processed_items, \
+from processing import process_raw_items, process_out_of_stock_raw_items, normalize_pre_processed_items, \
     upsert_products_from_normalized_items, upsert_product_offers, delete_out_of_stock_raw_items, \
-    cleanup_inexsistent_items, process_out_of_stock_raw_items
+    cleanup_inexsistent_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
 from scraper.category.bootstrap import bootstrap_crawlable_entities

@@ -1,6 +1,6 @@
 import re
 
-from processing.raw_items_processor.mapping.normalization.processing.constants.colors import color_list
+from processing.data.constants.colors import color_list
 
 random_keywords_in_order = [
     "kiteboarding",

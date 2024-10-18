@@ -1,7 +1,7 @@
-from processing.raw_items_processor.mapping.entitites.price import GustmarketPrice
-from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct, \
-    PreProcessedProductVariant
-from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none
+from processing.entitites.price import GustmarketPrice
+from processing.entitites.pre_processed_item import PreProcessedItem, \
+    PreProcessedItemVariant
+from processing.data.utils import flatten_list, uniq_filter_none
 
 
 def append_kitemana_domain(path):
@@ -48,7 +48,7 @@ def variant_from_item_cproduct(variant):
                 if first_fvalue['fName'] == 'Twintip Size':
                     size = first_fvalue['fvName']
 
-    return PreProcessedProductVariant(
+    return PreProcessedItemVariant(
         id=str(variant["pId"]),
         url=str(variant["pId"]),
         price=GustmarketPrice.from_price_string(price, 'EUR'),
@@ -80,7 +80,7 @@ def variant_from_item_variant(variant, base_image_path):
     if base_image_path is not None and variant.get('ImagePath') is not None:
         image = append_kitemana_domain(base_image_path + variant['ImagePath'])
 
-    return PreProcessedProductVariant(
+    return PreProcessedItemVariant(
         id=str(variant["pId"]),
         url=str(variant["pId"]),
         price=GustmarketPrice.from_price_string(price, 'EUR'),
@@ -123,7 +123,7 @@ def from_raw_item_kitemana(crawled_item):
 
     variants = list(map(set_variant_url, variants))
 
-    return PreProcessedProduct(
+    return PreProcessedItem(
         id=crawled_item['id'],
         name=crawled_item['name'],
         name_variants=[crawled_item['name']],

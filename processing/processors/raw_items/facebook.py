@@ -1,4 +1,4 @@
-from processing.raw_items_processor.mapping.base import BaseItem
+from processing.interfaces import BaseItem
 
 
 class FacebookPreProcessedItem(BaseItem):

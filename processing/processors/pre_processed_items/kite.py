@@ -1,11 +1,8 @@
-
-from processing.raw_items_processor.mapping.normalization.processing.cleanup import replace_string_word_ignore_case, \
-    replace_string_ignore_case
-from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none, filter_none, extract_floats, \
+from processing.data.cleanup import replace_string_ignore_case
+from processing.processors.pre_processed_items.data_extractor import extract_and_cleanup_kite_size
+from processing.data.utils import flatten_list, uniq_filter_none, filter_none, extract_floats, \
     format_float
 
-from processing.raw_items_processor.mapping.normalization.processing.processing import extract_brand_model_info, \
-    extract_and_cleanup_kite_size
 
 def cleanup_size(size):
     r = extract_floats(size)

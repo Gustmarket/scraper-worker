@@ -1,6 +1,6 @@
 import re
 
-from processing.raw_items_processor.mapping.utils import flatten_list
+from processing.data.utils import flatten_list
 
 
 def cleanup_str(string_var):

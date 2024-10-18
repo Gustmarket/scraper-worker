@@ -1,8 +1,8 @@
-from processing.raw_items_processor.mapping.normalization.pre_processed_product import \
-    normalize_pre_processed_product
-from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct
+from processing.entitites.pre_processed_item import PreProcessedItem
 
 from celery.utils.log import get_task_logger
+
+from processing.processors.pre_processed_items.processor import normalize_pre_processed_product
 
 logger = get_task_logger(__name__)
 def normalize_pre_processed_item(item):
@@ -17,7 +17,7 @@ def normalize_pre_processed_item(item):
                                 'SHOPIFY_PRODUCT',
                                 'KITEMANA_PRODUCT',
                                 'ZEPHCONTROL_PRODUCT']):
-        mapped = normalize_pre_processed_product(PreProcessedProduct.from_json(item['item']))
+        mapped = normalize_pre_processed_product(PreProcessedItem.from_json(item['item']))
         logger.info(f'mapped: {mapped}')
         if mapped is not None:
             normalized_items = [mapped.to_json()]
