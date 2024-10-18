@@ -126,7 +126,7 @@ def upsert_product_offers():
             "brand_slug": item['brand_slug'],
             "category": item['category'],
             "images": item['images'],
-            "condition": item['condition'],
+            "condition": item.get('condition'),
             "attributes": item['attributes']
         }
 

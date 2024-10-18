@@ -65,12 +65,12 @@ class PreProcessedProduct(BaseItem):
     brand: str
     category: str
     condition: str
-    defined_category: str
-    defined_condition: str
+    scraped_category: str
+    scraped_condition: str
     variants: [PreProcessedProductVariant]
     images: [str]
 
-    def __init__(self, id, name, name_variants, url, brand, category, condition, defined_category, defined_condition, variants, images):
+    def __init__(self, id, name, name_variants, url, brand, category, condition, scraped_category, scraped_condition, variants, images):
         self.id = id
         self.name = name
         self.name_variants = name_variants
@@ -78,19 +78,19 @@ class PreProcessedProduct(BaseItem):
         self.brand = brand
         self.category = category
         self.condition = condition
-        self.defined_category = defined_category
-        self.defined_condition = defined_condition
+        self.scraped_category = scraped_category
+        self.scraped_condition = scraped_condition
         self.variants = variants
         self.images = images
 
     def __str__(self):
-        return f"PreProcessedItem({self.id}, {self.name}, {self.brand}, {self.category}, {self.condition}, {self.defined_category}, {self.defined_condition}, {self.variants}, {self.images})"
+        return f"PreProcessedItem({self.id}, {self.name}, {self.brand}, {self.category}, {self.condition}, {self.scraped_category}, {self.scraped_condition}, {self.variants}, {self.images})"
 
     def __repr__(self):
         return self.__str__()
 
     def __eq__(self, other):
-        return self.id == other.id and self.name == other.name and self.brand == other.brand and self.category == other.category and self.defined_category == other.defined_category and self.defined_condition == other.defined_condition
+        return self.id == other.id and self.name == other.name and self.brand == other.brand and self.category == other.category and self.scraped_category == other.scraped_category and self.scraped_condition == other.scraped_condition
 
     def __hash__(self):
         return hash((self.id, self.name, self.brand, self.category, self.variants, self.images))
@@ -102,9 +102,10 @@ class PreProcessedProduct(BaseItem):
             "name_variants": self.name_variants,
             "brand": self.brand,
             "url": self.url,
+            "category": self.category,
             "condition": self.condition,
-            "defined_category": self.defined_category,
-            "defined_condition": self.defined_condition,
+            "scraped_category": self.scraped_category,
+            "scraped_condition": self.scraped_condition,
             "variants": list(map(lambda v: v.to_json(), self.variants)),
             "images": self.images,
         }
@@ -118,9 +119,9 @@ class PreProcessedProduct(BaseItem):
             name_variants=json.get('name_variants', []),
             brand=json['brand'],
             condition=json.get('condition'),
-            category=json['category'],
-            defined_category=json['defined_category'],
-            defined_condition=json['defined_condition'],
+            category=json.get('category'),
+            scraped_category=json.get('scraped_category'),
+            scraped_condition=json.get('scraped_condition'),
             variants=list(map(PreProcessedProductVariant.from_json, json['variants'])),
             images=json.get('images'),
         )

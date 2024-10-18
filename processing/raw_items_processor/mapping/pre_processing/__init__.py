@@ -21,7 +21,7 @@ class PreProcessor(DataProcessor):
                 **item['item'],
                 'url': item['url'],
                 'category': item['category'],
-                'condition': item['condition'],
+                'condition': item.get('condition'),
         }
         if crawled_item_type == 'KITEMANA_PRODUCT':
             pre_processed = from_raw_item_kitemana(item_to_preprocess)

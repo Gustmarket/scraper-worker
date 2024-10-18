@@ -71,8 +71,8 @@ def from_raw_item_shopify(crawled_item):
         brand=crawled_item.get('vendor'),
         variants=variants,
         images=images,
-        category=category,
-        condition=condition,
-        defined_category=crawled_item['category'],
-        defined_condition=crawled_item['condition'],
+        category=crawled_item['category'],
+        condition=crawled_item.get('condition'),
+        scraped_category=category,
+        scraped_condition=condition,
     )
