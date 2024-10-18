@@ -131,8 +131,6 @@ def from_raw_item_kitemana(crawled_item):
         brand=crawled_item['brand'],
         variants=variants,
         images=images,
-        category=crawled_item['category'],
-        condition=crawled_item.get('condition'),
-        scraped_category=category,
-        scraped_condition=None,
+        category=category,
+        condition=None,
     )

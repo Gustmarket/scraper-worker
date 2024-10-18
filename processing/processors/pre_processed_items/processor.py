@@ -7,6 +7,7 @@ from processing.processors.pre_processed_items.kite import map_kite_size
 from processing.data.cleanup import replace_string_ignore_case, \
     replace_string_word_ignore_case
 from processing.processors.pre_processed_items.data_extractor import extract_brand_model_info
+from processing.processors.pre_processed_items.categoriser import categorise_pre_processed_item
 from processing.data.utils import flatten_list, uniq_filter_none, format_float, \
     extract_floats
 
@@ -45,10 +46,12 @@ def map_kite_variant_label_to_size_or_none(raw):
     mapped = mapped.lower().strip()
     return cleanup_size(mapped)
 
-def normalize_pre_processed_product(item: PreProcessedItem):
+def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
     if item.brand is None and item.name is None:
         logger.debug(f'none {item}')
         return None
+
+    item = categorise_pre_processed_item(item, parentAttributes.get('category'))
 
     name = item.name
     if name is None:
@@ -62,7 +65,7 @@ def normalize_pre_processed_product(item: PreProcessedItem):
         for variant_label in all_variant_labels:
             name = replace_string_word_ignore_case(name, variant_label, '')
 
-    model_info = extract_brand_model_info(item.category,item.brand, name)
+    model_info = extract_brand_model_info(item.category, item.brand, name)
     brand_slug = model_info["brand_slug"]
     brand_name = model_info["brand_name"]
     name = model_info["name"]

@@ -17,7 +17,10 @@ def normalize_pre_processed_item(item):
                                 'SHOPIFY_PRODUCT',
                                 'KITEMANA_PRODUCT',
                                 'ZEPHCONTROL_PRODUCT']):
-        mapped = normalize_pre_processed_product(PreProcessedItem.from_json(item['item']))
+        mapped = normalize_pre_processed_product(PreProcessedItem.from_json(item['item']), {
+            'condition': item.get('condition'),
+            'category': item.get('category'),
+        })
         logger.info(f'mapped: {mapped}')
         if mapped is not None:
             normalized_items = [mapped.to_json()]

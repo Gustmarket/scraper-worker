@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from processing.data.utils import uniq_filter_none, flatten_list
 from processing.interfaces import BaseItem
 from processing.entitites.price import GustmarketPrice
 
@@ -64,36 +65,51 @@ class PreProcessedItem(BaseItem):
     url: str
     brand: str
     category: str
+    subcategories: [str]
     condition: str
-    scraped_category: str
-    scraped_condition: str
     variants: [PreProcessedItemVariant]
     images: [str]
 
-    def __init__(self, id, name, name_variants, url, brand, category, condition, scraped_category, scraped_condition, variants, images):
+    def __init__(self, id, name, name_variants, url, brand, category, subcategories, condition, variants, images):
         self.id = id
         self.name = name
         self.name_variants = name_variants
         self.url = url
         self.brand = brand
         self.category = category
+        self.subcategories = subcategories
         self.condition = condition
-        self.scraped_category = scraped_category
-        self.scraped_condition = scraped_condition
         self.variants = variants
         self.images = images
 
     def __str__(self):
-        return f"PreProcessedItem({self.id}, {self.name}, {self.brand}, {self.category}, {self.condition}, {self.scraped_category}, {self.scraped_condition}, {self.variants}, {self.images})"
+        return f"PreProcessedItem({self.id}, {self.name}, {self.brand}, {self.category}, {self.subcategories}, {self.condition}, {self.variants}, {self.images})"
 
     def __repr__(self):
         return self.__str__()
 
     def __eq__(self, other):
-        return self.id == other.id and self.name == other.name and self.brand == other.brand and self.category == other.category and self.scraped_category == other.scraped_category and self.scraped_condition == other.scraped_condition
+        return self.id == other.id and self.name == other.name and self.brand == other.brand and self.category == other.category
 
     def __hash__(self):
         return hash((self.id, self.name, self.brand, self.category, self.variants, self.images))
+
+    def get_all_name_variants(self):
+        variant_labels = uniq_filter_none(
+            flatten_list([v.attributes.get('variant_labels', []) for v in self.variants]))
+        variant_name_variants = uniq_filter_none(
+            flatten_list([v.name_variants for v in self.variants if hasattr(v, 'name_variants')]))
+        variant_names = [v.name for v in self.variants if v.name]
+        
+        all_variants = (
+            [self.name] +
+            self.name_variants +
+            variant_labels +
+            variant_name_variants +
+            variant_names
+        )
+        
+        return uniq_filter_none(all_variants)
 
     def to_json(self):
         return {
@@ -103,9 +119,8 @@ class PreProcessedItem(BaseItem):
             "brand": self.brand,
             "url": self.url,
             "category": self.category,
+            "subcategories": self.subcategories,
             "condition": self.condition,
-            "scraped_category": self.scraped_category,
-            "scraped_condition": self.scraped_condition,
             "variants": list(map(lambda v: v.to_json(), self.variants)),
             "images": self.images,
         }
@@ -120,8 +135,7 @@ class PreProcessedItem(BaseItem):
             brand=json['brand'],
             condition=json.get('condition'),
             category=json.get('category'),
-            scraped_category=json.get('scraped_category'),
-            scraped_condition=json.get('scraped_condition'),
+            subcategories=json.get('subcategories'),
             variants=list(map(PreProcessedItemVariant.from_json, json['variants'])),
             images=json.get('images'),
         )
