@@ -73,7 +73,7 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
         for variant_label in all_variant_labels:
             name = replace_string_word_ignore_case(name, variant_label, '')
 
-    model_info = extract_brand_model_info(item.brand, name)
+    model_info = extract_brand_model_info(item.category,item.brand, name)
     brand_slug = model_info["brand_slug"]
     brand_name = model_info["brand_name"]
     name = model_info["name"]

@@ -123,16 +123,19 @@ def cleanup_all_sizes_from_name(name):
     return name_to_parse
 
 
-def extract_model(brand_slug, name):
+def extract_model(category, brand_slug, name):
     brand_with_models = list(filter(lambda x: x["slug"] == brand_slug, brands_and_models))
     default_return_value = {"name": name, "unique_model_identifier": get_unique_model_identifier(name)}
     if len(brand_with_models) == 0:
         return default_return_value
 
     # todo:not hardcode
-    brand_models = brand_with_models[0].get('kites', [])
-    if brand_models is None or len(brand_models) == 0:
-        return default_return_value
+    brand_models = None
+
+    if category is "KITE" or category is None:
+        brand_models = brand_with_models[0].get('kites', [])
+    elif category is "TWINTIP":
+        brand_models = brand_with_models[0].get('twintip', [])
 
     found = None
 
@@ -171,8 +174,7 @@ def extract_model(brand_slug, name):
 
     return default_return_value
 
-
-def extract_brand_model_info(raw_brand, raw_name):
+def extract_brand_model_info(category, raw_brand, raw_name):
     brand_slug = None
     brand_name = None
     model_name = cleanup_name_string_by_keywords(raw_name)
@@ -195,7 +197,7 @@ def extract_brand_model_info(raw_brand, raw_name):
         for keyword in brand_keywords:
             model_name = replace_string_ignore_case(model_name, keyword, "")
 
-    model_info = extract_model(brand_slug, model_name)
+    model_info = extract_model(category, brand_slug, model_name)
     model_name = model_info["name"].strip()
     model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
@@ -209,3 +211,4 @@ def extract_brand_model_info(raw_brand, raw_name):
         "size": size,
         "year": model_year if year is None else year
     }
+
