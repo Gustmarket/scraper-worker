@@ -141,7 +141,7 @@ async def schedule_crawlable_entity_async():
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
         for i in range(1, 10):
-            logger.info(f'schedule_url_batch_async: ${i}')
+            logger.info(f'schedule_crawlable_entity_async: ${i}')
             await get_one_expired_crawlable_entity_and_update(playwright_context)
 
 
@@ -165,6 +165,8 @@ async def local_test_async():
 
 # bootstrap_crawlable_entities_task.delay()
 
-# process_raw_items_task.delay()
+process_raw_items_task.delay()
 
 # schedule_crawlable_entity.delay()
+
+# local_test_task.delay()

@@ -137,6 +137,8 @@ def extract_model(category, brand_slug, name):
     elif category is "TWINTIP":
         brand_models = brand_with_models[0].get('twintip', [])
 
+    if brand_models is None:
+        return default_return_value
     found = None
 
     score = 0
@@ -145,6 +147,7 @@ def extract_model(category, brand_slug, name):
         name_to_parse = replace_string_ignore_case(name_to_parse, brand_variant, "")
 
     name_to_parse = cleanup_all_sizes_from_name(name_to_parse).replace('\\s\\s', ' ')
+
 
     for brand_model in brand_models:
         no_of_variants = 1

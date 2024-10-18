@@ -84,7 +84,7 @@ class NormalizedItem(BaseItem):
         self.attributes = attributes
 
     def __str__(self):
-        return f"KiteItem({self.id}, {self.internal_sku}, {self.name}, {self.brand}, {self.attributes}, {self.brand_slug}, {self.condition}, {self.category}, {self.variants}, {self.images})"
+        return f"NormalizedItem({self.id}, {self.internal_sku}, {self.name}, {self.brand}, {self.attributes}, {self.brand_slug}, {self.condition}, {self.category}, {self.variants}, {self.images})"
 
     def __repr__(self):
         return self.__str__()

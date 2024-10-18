@@ -1,4 +1,3 @@
-import re
 
 from celery.utils.log import get_task_logger
 
@@ -9,7 +8,9 @@ from processing.raw_items_processor.mapping.normalization.processing.cleanup imp
 from processing.raw_items_processor.mapping.normalization.processing.processing import extract_brand_model_info, \
     extract_and_cleanup_kite_size
 from processing.raw_items_processor.mapping.pre_processing.base import PreProcessedProduct
-from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none, filter_none
+from processing.raw_items_processor.mapping.utils import flatten_list, uniq_filter_none, filter_none, format_float, \
+    extract_floats
+from processing.raw_items_processor.mapping.normalization.pre_processed_product.kite import map_kite_size
 
 logger = get_task_logger(__name__)
 
@@ -33,29 +34,19 @@ def get_internal_sku(year, brand_slug, name):
     return internal_sku
 
 
-# todo:
-def extract_floats(text):
-    if text is None:
-        return []
-    pattern = r'[-+]?\d*\.\d+|\d+'  # Regular expression pattern for floats
-    floats = re.findall(pattern, text.replace(',', '.').replace('_', '.'))
-    return [float(num) for num in floats]
-
-
-def format_float(value):
-    if value == int(value):
-        return str(int(value))
-    else:
-        return str(value)
-
-
 def cleanup_size(size):
     r = extract_floats(size)
     if len(r) == 0:
         return None
     return f"{format_float(r[0])}m"
 
-
+def map_kite_variant_label_to_size_or_none(raw):
+    mapped = replace_string_ignore_case(raw, "m²", "")
+    mapped = replace_string_ignore_case(mapped, "sqm", "")
+    mapped = replace_string_ignore_case(mapped, "m", "")
+    mapped = mapped.lower().strip()
+    return cleanup_size(mapped)
+    
 def normalize_pre_processed_product(item: PreProcessedProduct):
     if item.brand is None and item.name is None:
         logger.debug(f'none {item}')
@@ -81,37 +72,15 @@ def normalize_pre_processed_product(item: PreProcessedProduct):
     condition = model_info["condition"]
 
     def map_variant(kv):
-        size = kv.attributes.get('size', None)
-        if size is None:
-            variant_labels = kv.attributes.get('variant_labels', [])
-            if variant_labels is None:
-                variant_labels = []
-            # todo: extract common fn
-
-            def map_variant_label_to_size_or_none(raw):
-                mapped = replace_string_ignore_case(raw, "m²", "")
-                mapped = replace_string_ignore_case(mapped, "sqm", "")
-                mapped = replace_string_ignore_case(mapped, "m", "")
-                mapped = mapped.lower().strip()
-                return cleanup_size(mapped)
-
-            size_variant_labels = filter_none(list(map(map_variant_label_to_size_or_none, variant_labels)))
-            if len(size_variant_labels) > 0:
-                size = size_variant_labels[0]
-        size = cleanup_size(size)
         variant_name = kv.name
+        size = None
         if type(variant_name) == "list" and len(variant_name) > 0:
             variant_name = variant_name[0]
 
-        if size is None:
-            name_variants = kv.name_variants
-            if name_variants is None:
-                name_variants = []
-            name_variants = uniq_filter_none(flatten_list(name_variants + [variant_name]))
-            for name_variant in name_variants:
-                _, size = extract_and_cleanup_kite_size(name_variant)
-                if size is not None:
-                    break
+        if item.category is "KITE" or item.category is None:
+            size = map_kite_size(variant_name, kv)
+        elif item.category is "TWINTIP":
+            size = kv.attributes.get('size', None)
 
         return NormalizedItemVariant(
             price=kv.price,

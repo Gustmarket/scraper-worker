@@ -39,6 +39,15 @@ def variant_from_item_cproduct(variant):
         else:
             price = None
 
+    size = variant['Size']
+    if size is None:
+        # twintip
+        if 'fValues' in variant and isinstance(variant['fValues'], list) and len(variant['fValues']) > 0:
+            first_fvalue = variant['fValues'][0]
+            if isinstance(first_fvalue, dict) and 'fvName' in first_fvalue and 'fName' in first_fvalue:
+                if first_fvalue['fName'] == 'Twintip Size':
+                    size = first_fvalue['fvName']
+
     return PreProcessedProductVariant(
         id=str(variant["pId"]),
         url=str(variant["pId"]),
@@ -48,7 +57,7 @@ def variant_from_item_cproduct(variant):
         in_stock=is_variant_in_stock(variant),
         images=[append_kitemana_domain(variant.get('Image'))],
         attributes={
-            "size": variant['Size'],
+            "size": size,
             "color": variant.get('Color'),
         }
     )
