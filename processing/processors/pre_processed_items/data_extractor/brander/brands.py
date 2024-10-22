@@ -23,7 +23,7 @@ brand_dictionary = {
         "name": "Core",
         "keywords": []
     },
-    "crazy_fly": {
+    "crazy-fly": {
         "name": "Crazy Fly",
         "keywords": ["CrazyFly"]
     },
@@ -39,7 +39,7 @@ brand_dictionary = {
         "name": "Eleveight",
         "keywords": []
     },
-    "f_one": {
+    "f-one": {
         "name": "F-One",
         "keywords": ["fone", "f one"]
     },
@@ -55,7 +55,7 @@ brand_dictionary = {
         "name": "ION",
         "keywords": []
     },
-    "liquid_force": {
+    "liquid-force": {
         "name": "Liquid Force",
         "keywords": []
     },
@@ -79,7 +79,7 @@ brand_dictionary = {
         "name": "North",
         "keywords": []
     },
-    "ocean_rodeo": {
+    "ocean-rodeo": {
         "name": "Ocean Rodeo",
         "keywords": []
     },
@@ -95,7 +95,7 @@ brand_dictionary = {
         "name": "Prolimit",
         "keywords": []
     },
-    "ride_engine": {
+    "ride-engine": {
         "name": "Ride Engine",
         "keywords": []
     },

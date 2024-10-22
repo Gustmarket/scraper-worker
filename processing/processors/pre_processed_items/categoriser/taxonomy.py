@@ -5,11 +5,11 @@ product_taxonomy = {
             "c-kite", "delta kite", "bow kite", "freestyle kite", "all-round kite"
         ],
         "subcategories": {
-            "FREERIDE": ["freeride", "all-round"],
-            "WAVE": ["wave"],
-            "RACING": ["race"],
-            "FREESTYLE": ["freestyle", "c-kite"],
-            "FOIL": ["foil"]
+            "FREERIDES": ["freeride", "all-round"],
+            "WAVES": ["wave"],
+            "RACINGS": ["race"],
+            "FREESTYLES": ["freestyle", "c-kite"],
+            "FOILS": ["foil"]
         }
     },
     "KITEBOARDS": {
@@ -18,9 +18,9 @@ product_taxonomy = {
             "kite surfboard", "foilboard", "kiteboard deck", "freestyle board"
         ],
         "subcategories": {
-            "TWINTIP": ["twin-tip", "twintip", "freestyle board"],
-            "SURFBOARD": ["surfboard", "kite surfboard", "directional"],
-            "FOILBOARD": ["foilboard"]
+            "TWINTIPS": ["twin-tip", "twintip", "freestyle board"],
+            "SURFBOARDS": ["surfboard", "kite surfboard", "directional"],
+            "FOILBOARDS": ["foilboard"]
         }
     },
     "HARNESSES": {
@@ -29,8 +29,8 @@ product_taxonomy = {
             "freeride harness", "freestyle harness", "racing harness"
         ],
         "subcategories": {
-            "WAIST_HARNESS": ["waist harness"],
-            "SEAT_HARNESS": ["seat harness"]
+            "WAIST_HARNESSES": ["waist harness"],
+            "SEAT_HARNESSES": ["seat harness"]
         }
     },
     "BARS": {
@@ -76,7 +76,7 @@ product_taxonomy = {
             "protection helmet"
         ]
     },
-    "FOOTWEAR": {
+    "FOOTWEARS": {
         "keywords": [
             "booties", "water shoes", "neoprene shoes", "surf booties",
             "kiteboarding booties", "kite booties"
@@ -86,14 +86,14 @@ product_taxonomy = {
             "WATER_SHOES": ["water shoes"]
         }
     },
-    "APPAREL": {
+    "APPARELS": {
         "keywords": [
             "t-shirt", "kite t-shirt", "rashguard", "board shorts", "hoodie",
             "jacket", "kite jacket", "kite hoodie", "kiteboard jacket",
             "kite apparel", "kiteboarding clothing", "cap", "kite cap", "kite hat"
         ],
         "subcategories": {
-            "T-SHIRTS": ["t-shirt", "kite t-shirt"],
+            "T_SHIRTS": ["t-shirt", "kite t-shirt"],
             "RASHGUARDS": ["rashguard"],
             "BOARD_SHORTS": ["board shorts"],
             "JACKETS": ["jacket", "kite jacket", "kiteboard jacket"],
@@ -101,15 +101,15 @@ product_taxonomy = {
             "CAPS_AND_HATS": ["cap", "kite cap", "hat", "kite hat"]
         }
     },
-    "OTHER_GEAR": {
+    "OTHER_GEARS": {
         "keywords": [
             "windsock", "gps", "kite gps", "windspeed meter", "wind meter",
             "anemometer", "action camera", "gopro", "hydration pack", "drone"
         ],
         "subcategories": {
-            "WIND_MEASUREMENT": ["windsock", "windspeed meter", "wind meter", "anemometer"],
+            "WIND_MEASUREMENTS": ["windsock", "windspeed meter", "wind meter", "anemometer"],
             "CAMERAS": ["action camera", "gopro"],
-            "HYDRATION": ["hydration pack"],
+            "HYDRATIONS": ["hydration pack"],
             "DRONES": ["drone"]
         }
     },
@@ -122,7 +122,7 @@ product_taxonomy = {
     },
     "SPARE_PARTS": {
         "keywords": [
-            "spare parts", "kite bladder", "valve", "repair kit", "kite repair",
+            "spare part", "kite bladder", "valve", "repair kit", "kite repair",
             "kite valve", "bladder", "repair valve", "kite pump spare",
             "kiteboard spare"
         ]

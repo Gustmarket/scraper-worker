@@ -3,6 +3,10 @@ from processing.processors.pre_processed_items.categoriser.taxonomy import produ
 
 from thefuzz import process
 
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
+
 
 def get_category(text, parent_category=None):
     """
@@ -45,11 +49,11 @@ def get_subcategory(combined_text, category):
         return highest_subcategory
     return None
 
-def categorise_pre_processed_item(name_variants, parent_category):
-    category = get_category(name_variants, parent_category)
+def categorise_pre_processed_item(dirty_name_variants, parent_category):
+    category = get_category(" ".join(dirty_name_variants), parent_category)
     if not category:
-        return "UNKNOWN"
+        return ("UNKNOWN","UNKNOWN")
     
-    subcategory = get_subcategory(name_variants, category)
+    subcategory = get_subcategory(" ".join(dirty_name_variants), category)
     
     return (category, subcategory)

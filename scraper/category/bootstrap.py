@@ -26,20 +26,20 @@ def create_entity_to_bootstrap(url, category, condition, subcategories = None):
     }
 
 entities_to_bootstrap = [
-    create_entity_to_bootstrap("https://www.kitemana.com/kite", "KITE", None),
-    create_entity_to_bootstrap("https://www.kitemana.com/secondhand/kite", "KITE", "USED"),
-    create_entity_to_bootstrap("https://www.flysurf.com/achat-kitesurf-aile-aile-a-boudin.htm?sectionid=25", "KITE", None),
-    create_entity_to_bootstrap("https://www.kiteworldshop.com/en/13-kites", "KITE", None),
-    create_entity_to_bootstrap("https://www.glissattitude.com/en/shop/category/kitesurf-aile-kitesurf-1111", "KITE", None),
-    create_entity_to_bootstrap("https://www.magasin-glissevolution.com/14-ailes-de-kite", "KITE", None),
-    create_entity_to_bootstrap("https://www.surfpirates.de/Kites-3", "KITE", None),
-    create_entity_to_bootstrap("https://www.zephcontrol.com/21-ailes", "KITE", None),
-    create_entity_to_bootstrap("https://matos.be/en/14-kites", "KITE", None),
-    create_entity_to_bootstrap("https://www.coronation-industries.de/shop/en/75-tubekites#/availability-in_stock", "KITE", None),
-    create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/?p=1", "KITE", None),
-    create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITE", None),
-    create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITE", "USED"),
-    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "KITEBOARD", None, ["TWINTIP"]),
+    create_entity_to_bootstrap("https://www.kitemana.com/kite", "KITES", None),
+    create_entity_to_bootstrap("https://www.kitemana.com/secondhand/kite", "KITES", "USED"),
+    create_entity_to_bootstrap("https://www.flysurf.com/achat-kitesurf-aile-aile-a-boudin.htm?sectionid=25", "KITES", None),
+    create_entity_to_bootstrap("https://www.kiteworldshop.com/en/13-kites", "KITES", None),
+    create_entity_to_bootstrap("https://www.glissattitude.com/en/shop/category/kitesurf-aile-kitesurf-1111", "KITES", None),
+    create_entity_to_bootstrap("https://www.magasin-glissevolution.com/14-ailes-de-kite", "KITES", None),
+    create_entity_to_bootstrap("https://www.surfpirates.de/Kites-3", "KITES", None),
+    create_entity_to_bootstrap("https://www.zephcontrol.com/21-ailes", "KITES", None),
+    create_entity_to_bootstrap("https://matos.be/en/14-kites", "KITES", None),
+    create_entity_to_bootstrap("https://www.coronation-industries.de/shop/en/75-tubekites#/availability-in_stock", "KITES", None),
+    create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/?p=1", "KITES", None),
+    create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITES", None),
+    create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITES", "USED"),
+    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "KITEBOARDS", None, ["TWINTIP"]),
 ]
 
 

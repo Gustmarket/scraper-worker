@@ -101,20 +101,17 @@ class PreProcessedItem(BaseItem):
         all_variant_labels = uniq_filter_none(
             flatten_list(list(map(lambda x: x.split(' '), all_variant_labels))))
         return all_variant_labels
+    
+    def get_all_name_variants(self):
+        variant_names = [v.name for v in self.variants if v.name]
+        all_name_variants = uniq_filter_none(
+            [self.name] + flatten_list([v.name_variants for v in self.variants if hasattr(v, 'name_variants')]) + variant_names)
+        return all_name_variants
 
     def get_all_cleaned_name_variants(self):
         all_variant_labels = self.get_all_variant_labels()
-        variant_name_variants = uniq_filter_none(
-            flatten_list([v.name_variants for v in self.variants if hasattr(v, 'name_variants')]))
-        variant_names = [v.name for v in self.variants if v.name]
 
-        all_variants = (
-            [self.name] +
-            self.name_variants +
-            variant_name_variants +
-            variant_names +
-            all_variant_labels
-        )
+        all_variants = self.get_all_name_variants()
 
         cleaned_variants = []
         for variant in all_variants:
@@ -126,6 +123,13 @@ class PreProcessedItem(BaseItem):
         all_variants = cleaned_variants
 
         return uniq_filter_none(all_variants)
+    
+    def get_clean_name(self):
+        all_variant_labels = self.get_all_variant_labels()
+        cleaned_name = self.name
+        for variant_label in all_variant_labels:
+            cleaned_name = replace_string_word_ignore_case(cleaned_name, variant_label, '')
+        return cleaned_name.strip()
 
     def to_json(self):
         return {
