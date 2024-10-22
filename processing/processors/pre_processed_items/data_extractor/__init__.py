@@ -83,7 +83,6 @@ def extract_brand_model_info(category, raw_brand, raw_name):
     model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
 
-    logger.debug(f'extract_brand_model_info: {model_info}')
     return {
         "is_standardised": model_info.get("is_standardised", False),
         "brand_slug": brand_slug,
