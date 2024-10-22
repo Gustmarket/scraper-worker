@@ -58,16 +58,17 @@ class NormalizedItem(BaseItem):
     internal_sku: str
     name: str
     raw_name: str
-    url: str
+    url: str    
     brand: str
     brand_slug: str
     category: str
+    subcategories: [str]
     condition: str
     variants: [NormalizedItemVariant]
     images: [str]
     attributes: dict
 
-    def __init__(self, id, is_standardised, url, internal_sku, name, unique_model_identifier,raw_name,brand, brand_slug, condition, category, variants, images, attributes):
+    def __init__(self, id, is_standardised, url, internal_sku, name, unique_model_identifier,raw_name,brand, brand_slug, condition, category, subcategories, variants, images, attributes):
         self.id = id
         self.is_standardised = is_standardised
         self.url = url
@@ -79,12 +80,13 @@ class NormalizedItem(BaseItem):
         self.brand_slug = brand_slug
         self.condition = condition
         self.category = category
+        self.subcategories = subcategories
         self.variants = variants
         self.images = images
         self.attributes = attributes
 
     def __str__(self):
-        return f"NormalizedItem({self.id}, {self.internal_sku}, {self.name}, {self.brand}, {self.attributes}, {self.brand_slug}, {self.condition}, {self.category}, {self.variants}, {self.images})"
+        return f"NormalizedItem({self.id}, {self.internal_sku}, {self.name}, {self.brand}, {self.attributes}, {self.brand_slug}, {self.condition}, {self.category}, {self.subcategories}, {self.variants}, {self.images})"
 
     def __repr__(self):
         return self.__str__()
@@ -93,7 +95,7 @@ class NormalizedItem(BaseItem):
         return self.id == other.id and self.internal_sku == other.internal_sku and self.condition == other.condition and self.name == other.name and self.brand_slug == other.brand_slug and self.category == other.category
 
     def __hash__(self):
-        return hash((self.id, self.internal_sku, self.name, self.brand_slug, self.attributes, self.condition, self.category))
+        return hash((self.id, self.internal_sku, self.name, self.brand_slug, self.attributes, self.condition, self.category, self.subcategories))
 
     def to_json(self):
         return {
@@ -109,6 +111,7 @@ class NormalizedItem(BaseItem):
             "attributes": self.attributes,
             "condition": self.condition,
             "category": self.category,
+            "subcategories": self.subcategories,
             "variants": list(map(lambda v: v.to_json(), self.variants)),
             "images": self.images,
         }
@@ -128,6 +131,7 @@ class NormalizedItem(BaseItem):
             attributes=json['attributes'],
             category=json['category'],
             condition=json['condition'],
+            subcategories=json.get('subcategories', []),
             variants=list(map(NormalizedItemVariant.from_json, json['variants'])),
             images=json['images'],
         )

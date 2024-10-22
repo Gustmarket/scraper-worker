@@ -28,7 +28,7 @@ def get_internal_sku(year, brand_slug, name):
     # todo: get slug for model
     if name is not None:
         internal_sku = (internal_sku + name.lower().replace('  ', ' ')
-                        .replace(' ', '_').replace('/', '_').replace('?', '').replace('!', ''))
+                        .replace(' ', '-').replace('/', '-').replace('?', '').replace('!', '').replace('--', '-'))
     else:
         internal_sku = internal_sku + 'noname'
     return internal_sku
@@ -49,15 +49,14 @@ def map_kite_variant_label_to_size_or_none(raw):
 
 
 def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
+    logger.debug(f'normalize_pre_processed_product: {item}')
     if item.brand is None and item.name is None:
         logger.debug(f'none {item}')
         return None
 
     (category, subcategory) = categorise_pre_processed_item(item.get_all_name_variants(), parentAttributes.get('category'))
-    item.category = category
-    item.subcategories = [subcategory] if subcategory else []
 
-    model_info = extract_brand_model_info(item.category, item.brand, item.get_clean_name())
+    model_info = extract_brand_model_info(category, item.brand, item.get_clean_name())
     brand_slug = model_info["brand_slug"]
     brand_name = model_info["brand_name"]
     name = model_info["name"]
@@ -70,9 +69,9 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
         if type(variant_name) == "list" and len(variant_name) > 0:
             variant_name = variant_name[0]
 
-        if item.category is "KITES" or item.category is None:
+        if category == "KITES" or category is None:
             size = map_kite_size(variant_name, kv)
-        elif item.category is "KITEBOARDS":
+        elif category == "KITEBOARDS":
             size = map_kiteboard_size(variant_name, kv)
 
         return NormalizedItemVariant(
@@ -99,7 +98,8 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
         raw_name=item.name,
         brand=brand_name,
         brand_slug=brand_slug,
-        category=item.category,
+        category=category,
+        subcategories=[subcategory] if subcategory else [],
         condition=condition,
         images=item.images,
         url=item.url,

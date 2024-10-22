@@ -62,9 +62,9 @@ def extract_brand_model_info(category, raw_brand, raw_name):
     model_name, condition = extract_and_cleanup_condition(model_name)
     size = None
 
-    if category is None or category is "KITES":
+    if category is None or category == "KITES":
         model_name, size = extract_and_cleanup_kite_size(model_name)
-    elif category is "KITEBOARDS":
+    elif category == "KITEBOARDS":
         #todo: get subcategory(surfboards etc)
         model_name, size = extract_and_cleanup_kiteboard_size(model_name)
 
@@ -76,12 +76,14 @@ def extract_brand_model_info(category, raw_brand, raw_name):
     for keyword in brand_keywords:
         model_name = replace_string_ignore_case(model_name, keyword, "")
 
-    model_name = cleanup_all_kite_sizes_from_name(model_name).replace('\\s\\s', ' ')
+    model_name = cleanup_all_kite_sizes_from_name(model_name).replace('\\s\\s', ' ').strip()
 
     model_info = extract_model(category, brand_slug, model_name)
     model_name = model_info["name"].strip()
     model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
+
+    logger.debug(f'extract_brand_model_info: {model_info}')
     return {
         "is_standardised": model_info.get("is_standardised", False),
         "brand_slug": brand_slug,

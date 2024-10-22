@@ -2,7 +2,9 @@ import re
 
 from processing.data.cleanup import replace_string_ignore_case, replace_string_word_ignore_case
 from processing.data.utils import uniq_filter_none, flatten_list, filter_none, extract_floats, format_float
+from celery.utils.log import get_task_logger
 
+logger = get_task_logger(__name__)
 
 def extract_and_cleanup_kite_size(name):
     # Define the regular expression pattern

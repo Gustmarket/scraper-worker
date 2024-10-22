@@ -1,7 +1,7 @@
 from processing.processors.pre_processed_items.data_extractor.modeler.models.kites import kites
 
 def get_brand_models(category, brand_slug):
-    if category is "KITES":
+    if category == "KITES":
         return kites[brand_slug]
-    elif category is "KITEBOARDS":
+    elif category == "KITEBOARDS":
         return []
