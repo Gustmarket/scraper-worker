@@ -34,7 +34,7 @@ def get_slug_and_score(text):
 
 
 
-def guess_brand(raw_brand, raw_name):
+def guess_brand(raw_brand, raw_name, url):
     highest_score = 0
     highest_slug = None
     if raw_brand is not None:
@@ -50,5 +50,10 @@ def guess_brand(raw_brand, raw_name):
         if highest_slug in brand_dictionary:
             return (highest_slug, brand_dictionary[highest_slug]['name'], brand_dictionary[highest_slug].get('keywords'))
         return (highest_slug, "", [])
+    
+    if url is not None and highest_score < 89:
+        (highest_slug, highest_score) = get_slug_and_score(url)
+        if highest_score > 89:
+            return (highest_slug, "", [])
 
     return (get_brand_slug(raw_brand), raw_brand, [])

@@ -28,6 +28,7 @@ def create_entity_to_bootstrap(url, category, condition, subcategories = None):
 entities_to_bootstrap = [
     create_entity_to_bootstrap("https://www.kitemana.com/kite", "KITES", None),
     create_entity_to_bootstrap("https://www.kitemana.com/secondhand/kite", "KITES", "USED"),
+    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "KITEBOARDS", None, ["TWINTIP"]),
     create_entity_to_bootstrap("https://www.flysurf.com/achat-kitesurf-aile-aile-a-boudin.htm?sectionid=25", "KITES", None),
     create_entity_to_bootstrap("https://www.kiteworldshop.com/en/13-kites", "KITES", None),
     create_entity_to_bootstrap("https://www.glissattitude.com/en/shop/category/kitesurf-aile-kitesurf-1111", "KITES", None),
@@ -39,7 +40,7 @@ entities_to_bootstrap = [
     create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/?p=1", "KITES", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITES", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITES", "USED"),
-    create_entity_to_bootstrap("https://www.kitemana.com/kiteboard/twintip", "KITEBOARDS", None, ["TWINTIP"]),
+    create_entity_to_bootstrap("https://www.icarus.eu/collections/kitesurf-twintips", "KITEBOARDS", None, ["TWINTIP"]),
 ]
 
 

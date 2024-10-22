@@ -55,7 +55,7 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
 
     (category, subcategory) = categorise_pre_processed_item(item.get_all_name_variants(), parentAttributes.get('category'))
 
-    model_info = extract_brand_model_info(category, item.brand, item.get_clean_name())
+    model_info = extract_brand_model_info(category, item.brand, item.get_clean_name(), item.url)
     brand_slug = model_info["brand_slug"]
     brand_name = model_info["brand_name"]
     name = model_info["name"]

@@ -155,6 +155,9 @@ kites = {
         {"name": "Pure", "unique_model_identifier": None, "keywords": []},
         {"name": "Spark", "unique_model_identifier": None, "keywords": []},
     ],
+    "harlem": [
+        {"name": "Force", "unique_model_identifier": None, "keywords": []},
+    ],
     "liquid-force": [
         {"name": "NV", "unique_model_identifier": None, "keywords": []},
         {"name": "WOW v3", "unique_model_identifier": "wow", "keywords": ["wow 3"], "year": "2018"},

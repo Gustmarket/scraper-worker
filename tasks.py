@@ -163,10 +163,10 @@ async def local_test_async():
         await get_one_expired_product_url_and_update(playwright_context)
 
 
-# bootstrap_crawlable_entities_task.delay()
+bootstrap_crawlable_entities_task.delay()
 
-process_raw_items_task.delay()
-# delete_out_of_stock_raw_items_task.delay()
+# process_raw_items_task.delay()
+# upsert_product_offers_task.delay()
 
 # normalize_pre_processed_items_task.delay()
 

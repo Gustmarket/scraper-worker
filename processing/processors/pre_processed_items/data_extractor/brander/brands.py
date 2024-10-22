@@ -51,6 +51,10 @@ brand_dictionary = {
         "name": "GA",
         "keywords": ["Gaastra"]
     },
+    "harlem": {
+        "name": "Harlem",
+        "keywords": []
+    },
     "ion": {
         "name": "ION",
         "keywords": []

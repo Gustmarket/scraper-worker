@@ -56,7 +56,7 @@ def extract_and_cleanup_condition(raw_name):
 
     return name, condition
 
-def extract_brand_model_info(category, raw_brand, raw_name):
+def extract_brand_model_info(category, raw_brand, raw_name, url):
     model_name = cleanup_name_string_by_keywords(raw_name)
     model_name, year = extract_and_cleanup_year(model_name)
     model_name, condition = extract_and_cleanup_condition(model_name)
@@ -68,7 +68,7 @@ def extract_brand_model_info(category, raw_brand, raw_name):
         #todo: get subcategory(surfboards etc)
         model_name, size = extract_and_cleanup_kiteboard_size(model_name)
 
-    (brand_slug, brand_name, brand_keywords) = guess_brand(raw_brand, model_name)
+    (brand_slug, brand_name, brand_keywords) = guess_brand(raw_brand, model_name, url)
 
     if brand_keywords is None:
         brand_keywords = []
