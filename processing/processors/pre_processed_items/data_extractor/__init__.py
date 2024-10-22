@@ -5,8 +5,7 @@ from thefuzz import process, fuzz
 
 from processing.data.cleanup import cleanup_name_string_by_keywords, replace_string_ignore_case, \
     replace_string_word_ignore_case
-from processing.data.constants.brands_and_models import brands_and_models
-from processing.data.utils import flatten_list
+from processing.data.utils import flatten_list, uniq_filter_none
 from processing.processors.pre_processed_items.data_extractor.brander import guess_brand
 from processing.processors.pre_processed_items.data_extractor.kiteboards import extract_and_cleanup_kiteboard_size
 from processing.processors.pre_processed_items.data_extractor.kites import extract_and_cleanup_kite_size, \
@@ -61,6 +60,7 @@ def extract_brand_model_info(category, raw_brand, raw_name):
     model_name = cleanup_name_string_by_keywords(raw_name)
     model_name, year = extract_and_cleanup_year(model_name)
     model_name, condition = extract_and_cleanup_condition(model_name)
+    size = None
 
     if category is None or category is "KITES":
         model_name, size = extract_and_cleanup_kite_size(model_name)
@@ -72,7 +72,7 @@ def extract_brand_model_info(category, raw_brand, raw_name):
 
     if brand_keywords is None:
         brand_keywords = []
-    brand_keywords = brand_keywords + [brand_name] + [brand_slug]
+    brand_keywords = uniq_filter_none(brand_keywords + [brand_name] + [brand_slug])
     for keyword in brand_keywords:
         model_name = replace_string_ignore_case(model_name, keyword, "")
 

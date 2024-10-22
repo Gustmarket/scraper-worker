@@ -2,19 +2,15 @@ import re
 
 from celery.utils.log import get_task_logger
 from thefuzz import process, fuzz
-from processing.data.constants.brands_and_models import brands_and_models
 from processing.processors.pre_processed_items.data_extractor.modeler.models import get_brand_models
 
 logger = get_task_logger(__name__)
 def get_unique_model_identifier(name):
-    return name.lower().replace('  ', ' ').replace(' ', '-').replace('/', '-')
+    umi =  name.lower().replace('  ', ' ').replace(' ', '-').replace('/', '-')
+    return umi.strip('-')
 
 def extract_model(category, brand_slug, clean_name):
-    brand_with_models = list(filter(lambda x: x["slug"] == brand_slug, brands_and_models))
     default_return_value = {"name": clean_name, "unique_model_identifier": get_unique_model_identifier(clean_name)}
-    if len(brand_with_models) == 0:
-        return default_return_value
-
     brand_models = get_brand_models(category, brand_slug)
 
     if brand_models is None:

@@ -4,6 +4,8 @@ from processing.data.constants.colors import color_list
 
 random_keywords_in_order = [
     "kiteboarding",
+    "kiteboard",
+    "surfboard",
     "manufacturer",
     "kites",
     "kite",
@@ -20,7 +22,8 @@ random_keywords_in_order = [
     "aile de kitesurf",
     "(copie)",
     "NUE",
-    "(new!)"
+    "(new!)",
+    "twintip"
 ]
 
 def replace_string_ignore_case(source_string, keyword_to_replace, rep_with):

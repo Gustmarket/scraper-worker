@@ -166,6 +166,7 @@ async def local_test_async():
 # bootstrap_crawlable_entities_task.delay()
 
 process_raw_items_task.delay()
+# delete_out_of_stock_raw_items_task.delay()
 
 # normalize_pre_processed_items_task.delay()
 

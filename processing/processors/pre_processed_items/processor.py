@@ -3,13 +3,14 @@ from celery.utils.log import get_task_logger
 
 from processing.entitites.normalized_item import NormalizedItemVariant, NormalizedItem
 from processing.entitites.pre_processed_item import PreProcessedItem
-from processing.processors.pre_processed_items.kite import map_kite_size
 from processing.data.cleanup import replace_string_ignore_case, \
     replace_string_word_ignore_case
 from processing.processors.pre_processed_items.data_extractor import extract_brand_model_info, guess_brand
 from processing.processors.pre_processed_items.categoriser import categorise_pre_processed_item
 from processing.data.utils import flatten_list, uniq_filter_none, format_float, \
     extract_floats
+from processing.processors.pre_processed_items.data_extractor.kiteboards import map_kiteboard_size
+from processing.processors.pre_processed_items.data_extractor.kites import map_kite_size
 
 logger = get_task_logger(__name__)
 
@@ -56,10 +57,9 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
     item.category = category
     item.subcategories = [subcategory] if subcategory else []
 
-    name = item.get_clean_name()
-
-    (brand_slug, brand_name) = guess_brand(item.brand, name)
-    model_info = extract_brand_model_info(item.category, brand_slug, name)
+    model_info = extract_brand_model_info(item.category, item.brand, item.get_clean_name())
+    brand_slug = model_info["brand_slug"]
+    brand_name = model_info["brand_name"]
     name = model_info["name"]
     year = model_info["year"]
     condition = model_info["condition"]
@@ -73,7 +73,7 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
         if item.category is "KITES" or item.category is None:
             size = map_kite_size(variant_name, kv)
         elif item.category is "KITEBOARDS":
-            size = kv.attributes.get('size', None)
+            size = map_kiteboard_size(variant_name, kv)
 
         return NormalizedItemVariant(
             price=kv.price,
@@ -99,7 +99,7 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
         raw_name=item.name,
         brand=brand_name,
         brand_slug=brand_slug,
-        category=item.category.lower(),
+        category=item.category,
         condition=condition,
         images=item.images,
         url=item.url,

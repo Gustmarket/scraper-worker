@@ -14,7 +14,7 @@ def get_category(text, parent_category=None):
     Optionally prioritizes the search within the parent_category if provided.
     """
     # If a parent_category is passed, prioritize matching within that category
-    if parent_category and parent_category in product_taxonomy:
+    if parent_category and parent_category.upper() in product_taxonomy:
         return parent_category
 
 
