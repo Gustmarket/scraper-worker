@@ -49,7 +49,6 @@ def map_kite_variant_label_to_size_or_none(raw):
 
 
 def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
-    logger.debug(f'normalize_pre_processed_product: {item}')
     if item.brand is None and item.name is None:
         logger.debug(f'none {item}')
         return None
