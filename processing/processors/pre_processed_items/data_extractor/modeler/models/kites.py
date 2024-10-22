@@ -57,7 +57,7 @@ kites = {
         {"name": "XLite", "unique_model_identifier": None, "keywords": []},
         {"name": "XLite 2", "unique_model_identifier": None, "keywords": ["xlite2"]},
     ],
-    "crazyfly": [
+    "crazy-fly": [
         {"name": "Sculp", "unique_model_identifier": None, "keywords": []},
         {"name": "Hyper", "unique_model_identifier": None, "keywords": []},
     ],

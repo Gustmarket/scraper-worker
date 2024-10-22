@@ -2,6 +2,6 @@ from processing.processors.pre_processed_items.data_extractor.modeler.models.kit
 
 def get_brand_models(category, brand_slug):
     if category == "KITES":
-        return kites[brand_slug]
+        return kites.get(brand_slug)
     elif category == "KITEBOARDS":
-        return []
+        return None
