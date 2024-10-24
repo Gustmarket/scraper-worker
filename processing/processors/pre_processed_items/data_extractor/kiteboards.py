@@ -21,7 +21,7 @@ def extract_and_cleanup_twintip_size(raw):
     twintip_full_size_pattern = r'\b(\d{3})\s*x\s*(\d{2})\b'
     twintip_length_match = re.search(twintip_length_pattern, raw)
     if twintip_length_match:
-        twintip_length = float(twintip_length_match.group(1).replace(',', '.'))
+        twintip_length = f"{int(twintip_length_match.group(1).replace(',', '.'))}"
         cleaned_name = re.sub(twintip_full_size_pattern, '', raw).strip()
         cleaned_name = re.sub(twintip_length_pattern, '', cleaned_name).strip()
         cleaned_name = re.sub(twintip_width_pattern, '', cleaned_name).strip()
@@ -56,4 +56,4 @@ def map_kiteboard_size(variant_name, kv):
             _, extracted_size = extract_and_cleanup_kiteboard_size(name_variant)
             if extracted_size is not None:
                 break
-    return extracted_size
+    return f"{extracted_size}"

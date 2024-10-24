@@ -41,7 +41,6 @@ def extract_model(category, brand_slug, clean_name):
             "name": found['name'],
             "unique_model_identifier": get_unique_model_identifier(found['name']) if found.get(
                 'unique_model_identifier', None) is None else found['unique_model_identifier'],
-            "year": found.get('year', None),
             "is_standardised": True
         }
 
