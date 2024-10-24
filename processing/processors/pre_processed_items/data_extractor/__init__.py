@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 
 
 def extract_and_cleanup_year(name):
-    concat_year = next(iter(re.findall(r"[0-9]{4}/[0-9]{4}", name)), None)
+    concat_year = next(iter(re.findall(r"[0-9]{4}/[0-9]{2,4}", name)), None)
     year = next(iter(re.findall(r"[0-9]{4}", name)), None)
     if concat_year is not None and year != "":
         name = name.replace(concat_year, '').strip()
