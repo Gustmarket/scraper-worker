@@ -49,7 +49,6 @@ def normalize_pre_processed_items():
 
 def upsert_products_from_normalized_items():
     normalized_items = database.get_normalized_items({
-        "type": {'$in': ["KITEMANA_PRODUCT", 'MICRODATA_VARIANTS_ITEM', 'MICRODATA_ITEM', 'SHOPIFY_PRODUCT']},
         '$or': [
             {
                 'products_processed': False

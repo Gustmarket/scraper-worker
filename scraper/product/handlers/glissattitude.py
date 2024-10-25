@@ -12,8 +12,11 @@ async def glissattitude(url, playwright_context):
         page = await playwright_context.new_page()
         await page.goto(url)
 
+        # todo: be more smart wit this
         # Find the size option select elements
         size_option_selects = await page.query_selector_all('li[data-attribute_name="Surface (m2)"] select')
+        if len(size_option_selects) == 0 or size_option_selects is None:
+            size_option_selects = await page.query_selector_all('li[data-attribute_name="Taille (cm)"] select')
 
         # Get the values of the options
         size_option_values = \

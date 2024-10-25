@@ -22,7 +22,7 @@ async def magasin_glissevolution(url, playwright_context):
     return await attributes_combinations_product_scraper(
         url=url,
         playwright_context=playwright_context,
-        kite_size_group_key='taille',
+        product_size_group_keys=['taille'],
         get_initial_url=get_initial_url,
         get_product_node_content=get_product_node_content
     )

@@ -1,5 +1,6 @@
 import asyncio
 
+from processing.data.utils import uniq_filter_none
 from scraper.product.mapping import extract_product
 
 from celery.utils.log import get_task_logger
@@ -11,7 +12,7 @@ def combination_to_url_hash_path(combo):
 
 async def attributes_combinations_product_scraper(url,
                                                   playwright_context,
-                                                  kite_size_group_key,
+                                                  product_size_group_keys,
                                                   get_initial_url,
                                                   get_product_node_content):
     page = None
@@ -25,7 +26,7 @@ async def attributes_combinations_product_scraper(url,
         if initial_url is None:
             logger.debug('no initial url')
             return
-        sizes = [c for c in attributes_combinations if c['group'] == kite_size_group_key]
+        sizes = [c for c in attributes_combinations if c['group'] in product_size_group_keys]
         variants = []
 
         await page.goto(url.split('#')[0])

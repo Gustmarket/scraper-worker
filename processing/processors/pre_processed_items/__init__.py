@@ -12,11 +12,7 @@ def normalize_pre_processed_item(item):
 
     if crawled_item_type == 'FACEBOOK_GROUP_POST':
         normalized_items = None
-    elif (crawled_item_type in ['MICRODATA_VARIANTS_ITEM',
-                                'MICRODATA_ITEM',
-                                'SHOPIFY_PRODUCT',
-                                'KITEMANA_PRODUCT',
-                                'ZEPHCONTROL_PRODUCT']):
+    else:
         mapped = normalize_pre_processed_product(PreProcessedItem.from_json(item['item']), {
             'condition': item.get('condition'),
             'category': item.get('category'),

@@ -132,7 +132,7 @@ add_shopify_handler('icarus.eu')
 # add_soup_next_page_selector_handler('icarus',
 #                                     '.collection__products .product-grid-item .btn--quick',
 #                                     '.pagination .next a')
-add_soup_next_page_selector_handler('magasin-gl issevolution.com',
+add_soup_next_page_selector_handler('magasin-glissevolution.com',
                                     '#product_list .product-container .product-name',
                                     '#pagination_next_bottom a')
 add_soup_next_page_selector_handler('matos.be',
