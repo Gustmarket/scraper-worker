@@ -17,7 +17,7 @@ def extract_and_cleanup_surfboard_size(raw):
 
 def extract_and_cleanup_twintip_size(raw):
     twintip_length_pattern = r'\b(\d{3})\b'
-    twintip_width_pattern = r'\b(\d{3})\b'
+    twintip_width_pattern = r'\b(\d{2})\b'
     twintip_full_size_pattern = r'\b(\d{3})\s*x\s*(\d{2})\b'
     twintip_length_match = re.search(twintip_length_pattern, raw)
     if twintip_length_match:
@@ -26,6 +26,14 @@ def extract_and_cleanup_twintip_size(raw):
         cleaned_name = re.sub(twintip_length_pattern, '', cleaned_name).strip()
         cleaned_name = re.sub(twintip_width_pattern, '', cleaned_name).strip()
         return cleaned_name, twintip_length
+
+    twintip_cm_length_pattern = r'\b(\d{3})\s*cm\b'
+    twintip_cm_length_match = re.search(twintip_cm_length_pattern, raw)
+    if twintip_cm_length_match:
+        twintip_length = f"{int(twintip_cm_length_match.group(1))}"
+        cleaned_name = re.sub(twintip_cm_length_pattern, '', raw).strip()
+        return cleaned_name, twintip_length
+
     return raw, None
 
 

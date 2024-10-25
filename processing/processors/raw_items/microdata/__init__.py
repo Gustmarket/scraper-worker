@@ -16,7 +16,7 @@ def map_correct_price(price, price_currency, list_price):
 
     if list_price is not None:
         list_price = GustmarketPrice.from_price_string(list_price, price_currency)
-        if list_price.amount is not None:
+        if list_price.amount is not None and list_price.amount < price_result.amount:
             price_result = list_price
 
     return price_result

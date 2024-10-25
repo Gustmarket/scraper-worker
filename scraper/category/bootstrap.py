@@ -42,7 +42,7 @@ entities_to_bootstrap = [
     create_entity_to_bootstrap("https://matos.be/en/14-kites", "KITES", None),
     create_entity_to_bootstrap("https://www.coronation-industries.de/shop/en/75-tubekites#/availability-in_stock", "KITES", None),
     create_entity_to_bootstrap("https://www.coronation-industries.de/shop/en/71-twintip-kiteboards", "KITEBOARDS", None, ["TWINTIP"]),
-    create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites", "KITES", None),
+    create_entity_to_bootstrap("https://www.you-love-it.eu/shop/en/kitesurf/kites/", "KITES", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/kites", "KITES", None),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/used-kites", "KITES", "USED"),
     create_entity_to_bootstrap("https://www.icarus.eu/collections/kitesurf-twintips", "KITEBOARDS", None, ["TWINTIP"]),

@@ -13,6 +13,7 @@ from processing import process_raw_items, process_out_of_stock_raw_items, normal
 from scraper.category import get_one_expired_crawlable_entity_and_update
 from scraper.product import get_one_expired_product_url_and_update
 from scraper.category.bootstrap import bootstrap_crawlable_entities
+from trustpilot import scrape_trustpilot_stats
 app = Celery('tasks', broker=os.getenv("CELERY_BROKER_URL"))
 logger = get_task_logger(__name__)
 
@@ -30,6 +31,11 @@ app.conf.timezone = 'UTC'
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch every 10m')
     sender.add_periodic_task(600.0, schedule_url_batch.s(), name='schedule_url_batch_2 every 10m')
+    sender.add_periodic_task(
+        crontab(hour=0, minute=0),
+        scrape_trustpilot_stats_task.s(),
+        name='scrape_trustpilot_stats once per day'
+    )
     sender.add_periodic_task(
         crontab(hour=0, minute=0),
         schedule_crawlable_entity.s(),
@@ -135,6 +141,11 @@ def bootstrap_crawlable_entities_task():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(bootstrap_crawlable_entities())
 
+@app.task
+def scrape_trustpilot_stats_task():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(scrape_trustpilot_stats())
+
 async def schedule_crawlable_entity_async():
     # todo: count before starting
     async with async_playwright() as playwright:
@@ -176,3 +187,5 @@ async def local_test_async():
 # normalize_pre_processed_items_task.delay()
 
 # schedule_crawlable_entity.delay()
+
+# scrape_trustpilot_stats_task.delay()

@@ -6,6 +6,7 @@ random_keywords_in_order = [
     "kiteboarding",
     "kiteboard",
     "surfboard",
+    "planche", # todo: use and replace with from product taxonomy
     "manufacturer",
     "kites",
     "kite",
