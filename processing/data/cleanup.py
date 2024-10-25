@@ -21,6 +21,7 @@ random_keywords_in_order = [
     "100% FRISCHFLEISCH",
     "FRISCHFLEISCH",
     "HARDCORE SALE",
+    "aile kitesurf",
     "AILE DE SURF",
     "aile de kitesurf",
     "(copie)",

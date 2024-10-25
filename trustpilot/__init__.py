@@ -14,7 +14,7 @@ def get_trustpilot_stats(url: str):
     rating = soup.select_one('#business-unit-title .styles_rating__uyC6m p')
     if rating is None:
         return None
-    rating = rating.text
+    rating = float(rating.text)
     review_count = soup.select_one('#business-unit-title span span')
     if review_count is None:
         return None
@@ -25,16 +25,12 @@ def get_trustpilot_stats(url: str):
         "review_count": review_count,
     }
 
-def extract_domain(url):
-    parsed_url = urlparse(url)
-    return parsed_url.netloc
-
 def scrape_trustpilot_stats():
     crawlable_entities = database.get_model("crawlable_entities").find({})
     unique_domains = set()
     for entity in crawlable_entities:
         if "url" in entity["config"]:
-            domain = extract_domain(entity["config"]["url"])
+            domain = get_main_domain(entity["config"]["url"])
             unique_domains.add(domain)
     
     logger.info(f"Unique domains: {unique_domains}")
@@ -47,9 +43,10 @@ def scrape_trustpilot_stats():
         logger.info(f"Stats for {domain}: {stats}")
         database.get_model("trustpilot_stats").find_one_and_update({
             "domain": domain,
-            "domain_slug": get_main_domain(domain)
         }, {
             "$set": stats,
         }, upsert=True)
+
+    logger.info(f"Scraped {len(unique_domains)} trustpilot stats")
 
     return len(unique_domains)
