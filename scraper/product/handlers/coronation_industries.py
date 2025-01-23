@@ -3,7 +3,7 @@ from scraper.product.handlers.base import combination_to_url_hash_path, attribut
 
 def get_initial_url(url, attributes_combinations):
     kite_only_param = next((c for c in attributes_combinations if c['attribute'] == 'kite_only'), None)
-    board_only = next((c for c in attributes_combinations if c['attribute'] == 'board_only_mit_finnen'), None)
+    board_only = next((c for c in attributes_combinations if c['attribute'] in ['board_only_mit_finnen', 'board_only_mit_finnen_handle']), None)
     # todo: include everything here and also scrape sets and everything else
     if not kite_only_param and not board_only:
         raise Exception("no kite or board only param")

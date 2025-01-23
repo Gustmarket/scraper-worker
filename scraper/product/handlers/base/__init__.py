@@ -1,5 +1,5 @@
 import asyncio
-
+import uuid
 from processing.data.utils import uniq_filter_none
 from scraper.product.mapping import extract_product
 
@@ -16,6 +16,7 @@ async def attributes_combinations_product_scraper(url,
                                                   get_initial_url,
                                                   get_product_node_content):
     page = None
+    run_id = uuid.uuid4()
     try:
         page = await playwright_context.new_page()
         await page.goto(url)
@@ -24,7 +25,7 @@ async def attributes_combinations_product_scraper(url,
 
         initial_url = get_initial_url(url, attributes_combinations)
         if initial_url is None:
-            logger.debug('no initial url')
+            logger.debug(f'{run_id} no initial url')
             return
         sizes = [c for c in attributes_combinations if c['group'] in product_size_group_keys]
         variants = []
@@ -33,9 +34,9 @@ async def attributes_combinations_product_scraper(url,
         last_price = None
         for sizeCombo in sizes:
             url = f"{initial_url}/{combination_to_url_hash_path(sizeCombo)}"
-            logger.debug(f"getting product: {url}")
+            logger.debug(f"{run_id} getting product: {url}")
             await page.goto(url)
-            logger.debug(page.url)
+            logger.debug(f"{run_id} {page.url}")
 
             tries = 0
             while tries < 10:
@@ -56,7 +57,7 @@ async def attributes_combinations_product_scraper(url,
                     'url': url,
                     'availability': availability
                 }
-                logger.debug(f"pricecompare: {last_price}, {new_price}")
+                logger.debug(f"{run_id} pricecompare: {last_price}, {new_price}")
                 if last_price != new_price:
                     last_price = new_price
                     variants.append(item)
@@ -66,8 +67,10 @@ async def attributes_combinations_product_scraper(url,
             'id': await page.evaluate('() => window.id_product'),
             'variants': variants,
         }
+        logger.info(f"{run_id} we got {len(variants)} variants")
         return result, 'MICRODATA_VARIANTS_ITEM'
     except Exception as e:
+        logger.info(f"{run_id} error")
         raise e
     finally:
         if page is not None:

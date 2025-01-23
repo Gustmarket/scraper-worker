@@ -113,7 +113,22 @@ async def get_one_expired_product_url_and_update(playwright_context):
                                       upsert=False)
     except Exception as e:
         logger.exception('error while scraping product')
-        product_urls_model.update_one({'_id': product_url['_id']},
+        error_msg = str(e).lower()
+        if "target page, context or browser has been closed" in error_msg or "page closed" in error_msg:
+            logger.info("Page was closed during scraping")
+            product_urls_model.update_one({'_id': product_url['_id']},
+                                      {'$set': {
+                                          'updated_at': datetime.utcnow(),
+                                          'last_error': str(e),
+                                          'last_error_date': datetime.now(),
+                                          'next_update': datetime.now() + timedelta(hours=1)
+                                      },
+                                          '$inc': {
+                                              'playwright_context_error_count': 1
+                                          }},
+                                      upsert=False)
+        else:
+            product_urls_model.update_one({'_id': product_url['_id']},
                                       {'$set': {
                                           'updated_at': datetime.utcnow(),
                                           'last_error': str(e),

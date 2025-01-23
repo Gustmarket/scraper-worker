@@ -149,20 +149,40 @@ async def schedule_crawlable_entity_async():
     # todo: count before starting
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
-        playwright_context = await browser.new_context()
         for i in range(1, 10):
             logger.info(f'schedule_crawlable_entity_async: ${i}')
+            playwright_context = await browser.new_context()
             await get_one_expired_crawlable_entity_and_update(playwright_context)
 
 
-async def schedule_url_batch_async():
-    # todo: count before starting
-    async with async_playwright() as playwright:
-        browser = await playwright.chromium.launch(headless=True)
+async def get_one_expired_product_url_and_update_with_browser(browser):
+    playwright_context = None
+    try:
         playwright_context = await browser.new_context()
-        for i in range(1, 50):
-            logger.info(f'schedule_url_batch_async: ${i}')
-            await get_one_expired_product_url_and_update(playwright_context)
+        await get_one_expired_product_url_and_update(playwright_context)
+    except Exception as e:
+        logger.exception(f'get_one_expired_product_url_and_update_with_browser_error: ${e}')
+    finally:
+        if playwright_context is not None:
+            await playwright_context.close()
+
+async def schedule_url_batch_async():
+    try:
+        async with async_playwright() as playwright:
+            browser = await playwright.chromium.launch(headless=True)
+            for i in range(30):
+                try:
+                    logger.info(f'schedule_url_batch_async: ${i} ${browser.is_connected()}')
+                    if not browser.is_connected():
+                        logger.info("Browser was closed, launching new one...")
+                        browser = await playwright.chromium.launch(headless=True)
+                    tasks = [get_one_expired_product_url_and_update_with_browser(browser) for _ in range(2)]
+                    await asyncio.gather(*tasks)
+                    logger.info(f'end schedule_url_batch_async: ${i}')
+                except Exception as e:
+                    logger.exception(f'schedule_url_batch_async_error: ${e}')
+    except Exception as e:
+        logger.exception(f'schedule_url_batch_async_wrapper_error: ${e}')
 
 
 async def local_test_async():
@@ -188,3 +208,4 @@ async def local_test_async():
 # schedule_crawlable_entity.delay()
 
 # scrape_trustpilot_stats_task.delay()
+# schedule_url_batch.delay()
