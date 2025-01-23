@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
+
 from scraper.product.mapping import extract_product
 
 
@@ -9,6 +13,7 @@ async def kiteworldshop(url, playwright_context):
     try:
         page = await playwright_context.new_page()
         await page.goto(url)
+        logger.info(f"kiteworldshop: requested_url: {url} current_url: {page.url}")
 
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -16,8 +21,8 @@ async def kiteworldshop(url, playwright_context):
         extracted = extract_product(soup, url)
         attributes_combinations = await page.evaluate('() => window.attributesCombinations')
         combinations = await page.evaluate(
-            '() => window.combinations.map(x => ({idsAttributes: x.idsAttributes, reference: x.reference}))')
-        product = next(filter(lambda x: x['@type'] == 'Product', extracted['json-ld']))
+            '() => (window.combinations || []).map(x => ({idsAttributes: x.idsAttributes, reference: x.reference}))')
+        product = next(filter(lambda x: x['@type'] == 'Product', extracted['json-ld']), None)
         if product is None:
             raise Exception('No product found')
 
@@ -47,6 +52,7 @@ async def kiteworldshop(url, playwright_context):
 
         return extracted, 'MICRODATA_ITEM'
     except Exception as e:
+        logger.exception(f"kiteworldshop: error: {url}")
         raise e
     finally:
         if page is not None:

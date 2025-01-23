@@ -164,7 +164,11 @@ async def get_one_expired_product_url_and_update_with_browser(browser):
         logger.exception(f'get_one_expired_product_url_and_update_with_browser_error: ${e}')
     finally:
         if playwright_context is not None:
-            await playwright_context.close()
+            try:
+                await playwright_context.close()
+            except Exception as e:
+                # ignore
+                pass
 
 async def schedule_url_batch_async():
     try:
@@ -176,7 +180,7 @@ async def schedule_url_batch_async():
                     if not browser.is_connected():
                         logger.info("Browser was closed, launching new one...")
                         browser = await playwright.chromium.launch(headless=True)
-                    tasks = [get_one_expired_product_url_and_update_with_browser(browser) for _ in range(2)]
+                    tasks = [get_one_expired_product_url_and_update_with_browser(browser) for _ in range(1)]
                     await asyncio.gather(*tasks)
                     logger.info(f'end schedule_url_batch_async: ${i}')
                 except Exception as e:
