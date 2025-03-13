@@ -12,6 +12,7 @@ random_keywords_in_order = [
     "kite",
     "boarding",
     "limited availability",
+    "limited availabilty",
     "lightweight lightwind performer",
     "lightwind lightweight performer",
     "lightweight performer",

@@ -205,7 +205,7 @@ kites = {
         {"name": "Code Zero", "unique_model_identifier": None, "keywords": []},
         {"name": "Orbit", "unique_model_identifier": None, "keywords": []},
         {"name": "Orbit Pro", "unique_model_identifier": None, "keywords": []},
-        {"name": "Orbit Ultra", "unique_model_identifier": None, "keywords": []},
+        {"name": "Orbit Ultra", "unique_model_identifier": None, "keywords": ["orbit ultra aluula"]},
         {"name": "Pulse", "unique_model_identifier": None, "keywords": []},
     ],
     "ocean-rodeo": [

@@ -54,7 +54,6 @@ def cleanup_size(size):
 def map_kite_variant_label_to_size_or_none(raw):
     mapped = replace_string_ignore_case(raw, "m²", "")
     mapped = replace_string_ignore_case(mapped, "sqm", "")
-    mapped = replace_string_ignore_case(mapped, "m", "")
     mapped = mapped.lower().strip()
     return cleanup_size(mapped)
 

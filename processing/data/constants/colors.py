@@ -2,7 +2,7 @@
 color_list = [
     'pacific blue','pacificblue',
     'rubine red', 'rubinered',
-    'rubin red', 'rubinred',
+    'rubin red', 'rubinred', 'rubined',
     'sunset yellow', 'sunsetyellow',
     'red', 'rouge',
     'orange', 'orange',
