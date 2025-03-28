@@ -78,9 +78,7 @@ def map_microdata_variants_item(crawled_item):
         price=map_correct_price(x.get('price'), x.get('price_currency'), x.get('list_price')),
         name=x.get('name'),
         name_variants=x.get('name'),
-        in_stock=x.get('availability') is None or "InStock" in x.get('availability',
-                                                                     '') or "LimitedAvailability" in x.get(
-            'availability', ''),
+        in_stock=False if x.get('availability') is None else "InStock" in x.get('availability') or "LimitedAvailability" in x.get('availability'),
         images=x.get('images'),
         attributes=x.get('attributes')
     ), all_offers))

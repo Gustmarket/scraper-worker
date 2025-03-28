@@ -11,7 +11,7 @@ from processing import process_raw_items, process_out_of_stock_raw_items, normal
     upsert_products_from_normalized_items, upsert_product_offers, delete_out_of_stock_raw_items, \
     cleanup_inexsistent_items
 from scraper.category import get_one_expired_crawlable_entity_and_update
-from scraper.product import get_one_expired_product_url_and_update
+from scraper.product import get_one_expired_product_url_and_update, get_one_expired_product_url_and_update_test
 from scraper.category.bootstrap import bootstrap_crawlable_entities
 from trustpilot import scrape_trustpilot_stats
 app = Celery('tasks', broker=os.getenv("CELERY_BROKER_URL"))
@@ -194,7 +194,7 @@ async def local_test_async():
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
         playwright_context = await browser.new_context()
-        await get_one_expired_product_url_and_update(playwright_context)
+        await get_one_expired_product_url_and_update_test(playwright_context)
 
 
 # bootstrap_crawlable_entities_task.delay()

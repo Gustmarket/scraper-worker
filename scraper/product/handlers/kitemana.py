@@ -15,12 +15,12 @@ async def kitemana(url, playwright_context):
         soup = BeautifulSoup(html, "html.parser")
         
         # Find the target div
-        target_div = soup.select_one("#pdp-content")
+        description_div = soup.select_one("#pdp-content")
         
-        if target_div:
-            product["html_description"] = target_div.prettify()  # Keeps HTML formatting
-            if target_div.text is not None:
-                product["description"] = target_div.text.strip()
+        if description_div:
+            product["html_description"] = description_div.prettify()  # Keeps HTML formatting
+            if description_div.text is not None:
+                product["description"] = description_div.text.strip()
 
         return product, 'KITEMANA_PRODUCT'
     except Exception as e:

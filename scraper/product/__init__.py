@@ -72,24 +72,9 @@ async def scrape_and_save_product(product_url, playwright_context):
         **result
     }}, upsert=True)
 
-
-async def get_one_expired_product_url_and_update(playwright_context):
+async def get_one_expired_product_url_and_update_with_query(playwright_context, query):
     product_urls_model = database.get_model("product_urls")
-    product_url = product_urls_model.find_one_and_update({
-        'out_of_stock': {'$ne': True},
-        'disabled': {'$ne': True},
-        '$and': [
-            {'$or': [
-                {'error_count': {'$lt': 5}, },
-                {'error_count': {'$exists': False}, }
-            ]},
-            {
-                '$or': [
-                    {'next_update': {'$exists': False}},
-                    {'next_update': {'$lt': datetime.now()}}
-                ]
-            }]
-    }, [{
+    product_url = product_urls_model.find_one_and_update(query, [{
         '$set': {
             'next_update': {'$add': [
                 datetime.now(),
@@ -139,3 +124,26 @@ async def get_one_expired_product_url_and_update(playwright_context):
                                               'error_count': 1
                                           }},
                                       upsert=False)
+
+
+async def get_one_expired_product_url_and_update(playwright_context):
+   await get_one_expired_product_url_and_update_with_query(playwright_context, {
+        'out_of_stock': {'$ne': True},
+        'disabled': {'$ne': True},
+        '$and': [
+            {'$or': [
+                {'error_count': {'$lt': 5}, },
+                {'error_count': {'$exists': False}, }
+            ]},
+            {
+                '$or': [
+                    {'next_update': {'$exists': False}},
+                    {'next_update': {'$lt': datetime.now()}}
+                ]
+            }]
+    })
+   
+async def get_one_expired_product_url_and_update_test(playwright_context):
+   await get_one_expired_product_url_and_update_with_query(playwright_context, {
+        'hash': '79bbe6f9ae2add01562d58aff8118de7b5169b5e8f17eed93ff5232ff8b31dd3',
+    })

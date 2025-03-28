@@ -2,6 +2,7 @@ import asyncio
 import uuid
 from processing.data.utils import uniq_filter_none
 from scraper.product.mapping import extract_product
+from bs4 import BeautifulSoup
 
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
@@ -67,6 +68,16 @@ async def attributes_combinations_product_scraper(url,
             'id': await page.evaluate('() => window.id_product'),
             'variants': variants,
         }
+        html = await page.content()
+        soup = BeautifulSoup(html, "html.parser")
+        
+        # Find the target div
+        description_div = soup.select_one("#short_description_block")
+        
+        if description_div:
+            result["html_description"] = description_div.prettify()  # Keeps HTML formatting
+            if description_div.text is not None:
+                result["description"] = description_div.text.strip()
         logger.info(f"{run_id} we got {len(variants)} variants")
         return result, 'MICRODATA_VARIANTS_ITEM'
     except Exception as e:
