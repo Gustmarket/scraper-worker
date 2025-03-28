@@ -82,6 +82,11 @@ def extract_brand_model_info(category, raw_brand, raw_name, url):
     model_name = model_info["name"].strip()
     model_unique_model_identifier = model_info.get("unique_model_identifier", None)  # todo: make one
     model_year = model_info.get("year", None)  # todo: make one
+    model_year = model_year if model_year is not None else year
+
+    if category == "KITES":
+        if brand_slug  in ["core", "slingshot"]:
+            model_year = None
 
     return {
         "is_standardised": model_info.get("is_standardised", False),
@@ -91,6 +96,6 @@ def extract_brand_model_info(category, raw_brand, raw_name, url):
         "unique_model_identifier": model_unique_model_identifier,
         "condition": condition,
         "size": size,
-        "year": model_year if year is None else year
+        "year": model_year
     }
 

@@ -213,3 +213,5 @@ async def local_test_async():
 
 # scrape_trustpilot_stats_task.delay()
 # schedule_url_batch.delay()
+
+# process_raw_items_task.delay()
