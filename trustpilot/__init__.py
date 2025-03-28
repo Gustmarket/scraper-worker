@@ -11,15 +11,16 @@ def get_trustpilot_stats(url: str):
     response = requests.get(f"https://www.trustpilot.com/review/{url}")
     web_page = response.text
     soup = BeautifulSoup(web_page, "html.parser")
-    rating = soup.select_one('#business-unit-title .styles_rating__uyC6m p')
+    rating = soup.select_one('#business-unit-title p[data-rating-typography]')
     if rating is None:
         return None
+    logger.info(f"Found rating text: {rating.text}")
     rating = float(rating.text)
-    review_count = soup.select_one('#business-unit-title span span')
-    if review_count is None:
-        return None
-    review_count = review_count.text
-    review_count = int(''.join(filter(str.isdigit, review_count)))
+    review_count = soup.select_one('#business-unit-title .styles_reviewsAndRating__Syz6V')
+    logger.info(f"Found review count: {review_count}")
+    if review_count is not None:
+        review_count = review_count.text
+        review_count = int(''.join(filter(str.isdigit, review_count)))
     return {
         "rating": rating,
         "review_count": review_count,
