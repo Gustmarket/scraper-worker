@@ -4,7 +4,7 @@ from scraper.category.base import push_product_urls
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
-async def flysurf_category_scraper(url, enqueue_link, playwright_context, user_data):
+async def flysurf_category_scraper(url, enqueue_link, playwright_context, user_data, page):
     page = None
     try:
         page = await playwright_context.new_page()

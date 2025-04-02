@@ -9,13 +9,17 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 def soup_category_scraper(source, link_selector, get_next_page_url):
-    async def cat_s(url, enqueue_link, user_data):
+    async def cat_s(url, enqueue_link, user_data, page):
         # todo: add playwrigth/seleium get html and then use soup for the selectors #crazy
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
         links = soup.select(link_selector)
+        # todo: mark category error if no links found
         logger.debug(f"found {len(links)} links for {url} with selector {link_selector}")
+
+        if len(links) == 0 and page == 0:
+            raise Exception(f'no links found for {url}')
 
         urls = []
         for link in links:
@@ -32,4 +36,4 @@ def soup_category_scraper(source, link_selector, get_next_page_url):
         else:
             logger.info(f'no more links {source}')
 
-    return lambda url, enqueue_link, playwright_context, user_data: cat_s(url, enqueue_link, user_data)
+    return lambda url, enqueue_link, playwright_context, user_data, page: cat_s(url, enqueue_link, user_data, page)

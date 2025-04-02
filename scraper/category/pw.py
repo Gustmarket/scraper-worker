@@ -6,7 +6,7 @@ logger = get_task_logger(__name__)
 
 
 def playwright_category_scraper(source, link_selector, get_next_page_url, should_end):
-    async def cat_s(url, enqueue_link, playwright_context, user_data):
+    async def cat_s(url, enqueue_link, playwright_context, user_data, page):
         page = None
         try:
             page = await playwright_context.new_page()
@@ -18,6 +18,9 @@ def playwright_category_scraper(source, link_selector, get_next_page_url, should
                 link_selector)
 
             urls = list(set(urls))
+            if len(urls) == 0 and page == 0:
+                raise Exception(f'no links found for {url}')
+            
             if len(urls) > 0 and not should_end(urls):
                 await push_product_urls(scraped_url=url, source=source, urls=urls, user_data=user_data)
                 await enqueue_link(get_next_page_url(url))
@@ -30,5 +33,5 @@ def playwright_category_scraper(source, link_selector, get_next_page_url, should
             if page is not None:
                 await page.close()
 
-    return lambda url, enqueue_link, playwright_context, user_data: cat_s(url, enqueue_link, playwright_context,
-                                                                          user_data)
+    return lambda url, enqueue_link, playwright_context, user_data, page: cat_s(url, enqueue_link, playwright_context,
+                                                                          user_data, page)

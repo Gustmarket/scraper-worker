@@ -146,7 +146,7 @@ add_soup_next_page_query_param_handler('kitemana.com',
                                        '.product__item a',
                                        'pg')
 add_soup_next_page_query_param_handler('you-love-it.eu',
-                                       '.listing .product--title',
+                                       '.product-slider-item .product-info .product-name',
                                        'p')
 add_soup_next_page_query_param_handler('zephcontrol.com',
                                        '.catalog__content .product-grid .product .product-link',
@@ -166,7 +166,7 @@ add_playwright_handler('side-shore.com',
                        get_next_page_url_query_param_factory('page'))
 
 
-async def scrape_category(url, user_data, playwright_context):
+async def scrape_category(url, user_data, playwright_context, page=0):
     logger.info(f'scrape_category: category_url->{url} user_data: {user_data}')
     domain_handler = category_domain_handlers.get(get_main_domain(url))
     if domain_handler is None:
@@ -178,9 +178,9 @@ async def scrape_category(url, user_data, playwright_context):
     logger.info(f'scraping category: {url}')
 
     async def enqueue_link(new_url):
-        await scrape_category(new_url, user_data, playwright_context)
+        await scrape_category(new_url, user_data, playwright_context, page + 1)
 
-    await domain_handler(url=url, user_data=user_data, enqueue_link=enqueue_link, playwright_context=playwright_context)
+    await domain_handler(url=url, user_data=user_data, enqueue_link=enqueue_link, playwright_context=playwright_context, page=page)
 
 
 async def get_one_expired_crawlable_entity_and_update(playwright_context):
@@ -207,7 +207,7 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
             config = crawlable_entity['config']
             exceptions = []
             try:
-                await scrape_category(config['url'], config.get('user_data', {}), playwright_context)
+                await scrape_category(config['url'], config.get('user_data', {}), playwright_context, 0)
             except Exception as e:
                 exceptions.append(e)
             if len(exceptions) > 0:
