@@ -167,6 +167,7 @@ add_playwright_handler('side-shore.com',
 
 
 async def scrape_category(url, user_data, playwright_context):
+    logger.info(f'scrape_category: category_url->{url} user_data: {user_data}')
     domain_handler = category_domain_handlers.get(get_main_domain(url))
     if domain_handler is None:
         logger.info(f'no domain handler for {url}')
@@ -190,12 +191,15 @@ async def get_one_expired_crawlable_entity_and_update(playwright_context):
             {'next_update': {'$lt': datetime.now()}}
         ]
     }, [{
-        '$set': {'next_update': {'$add': [
-            datetime.now(),
-            {'$multiply': [{'$ifNull': ['$next_update_interval_minutes', 24 * 60]}, 60000.0]},
-        ]}}
+        '$set': {
+            'next_update': {'$add': [
+                datetime.now(),
+                {'$multiply': [{'$ifNull': ['$next_update_interval_minutes', 24 * 60]}, 60000.0]},
+            ]},
+            'last_error': None,
+            'last_error_date': None
+        }
     }], sort=[("next_update", pymongo.ASCENDING)], return_document=ReturnDocument.AFTER)
-
     try:
         if crawlable_entity is None:
             return
