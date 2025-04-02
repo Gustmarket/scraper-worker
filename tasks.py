@@ -228,4 +228,5 @@ async def local_test_async():
 
 # schedule_crawlable_entity.delay()
 # process_out_of_stock_raw_items_task.delay()
-local_test_task.delay()
+# local_test_task.delay()
+# schedule_url_batch.delay()

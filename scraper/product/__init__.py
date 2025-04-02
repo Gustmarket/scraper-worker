@@ -145,6 +145,6 @@ async def get_one_expired_product_url_and_update(playwright_context):
    
 async def get_one_expired_product_url_and_update_test(playwright_context):
    await get_one_expired_product_url_and_update_with_query(playwright_context, {
-        # 'last_error': 'list index out of range' 
-         'hash': 'e9436453f309969d8fac15f5d1905834f6f501172fdbf06d36f0e95b67c61fa7'  
+        # 'last_error': "could not load different url"
+         'hash': '9975eb45135c4d71b85d35c175c6ad3bc578185f7f5890e2a78d8a4547d15c54'  
     })

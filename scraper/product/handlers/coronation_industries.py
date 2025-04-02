@@ -42,5 +42,6 @@ async def coronation_industries(url, playwright_context):
                                   '06_langen_kiteboard_wakeboard_boardbags',
                                   '18_surfboard_sup_langen'],
         get_initial_url=get_initial_url,
-        get_product_node_content=get_product_node_content
+        get_product_node_content=get_product_node_content,
+        compare_urls=False
     )

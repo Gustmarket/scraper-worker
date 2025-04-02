@@ -27,9 +27,11 @@ async def surfpirates(url, playwright_context):
                 forAttr = await label.evaluate("l => l.getAttribute('for')")
                 variation_selectors.append(f"[for=\"{forAttr}\"]")
             attributes.append(variation_selectors)
-
+        
+        if len(attributes) == 0:
+            return None, 'OUT_OF_STOCK'
+        
         combos = generate_combinations(attributes)
-
         def page_has_diff_url():
             return page.url != product_url
 

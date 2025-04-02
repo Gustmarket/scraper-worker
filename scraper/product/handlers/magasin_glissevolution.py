@@ -24,5 +24,6 @@ async def magasin_glissevolution(url, playwright_context):
         playwright_context=playwright_context,
         product_size_group_keys=['taille'],
         get_initial_url=get_initial_url,
-        get_product_node_content=get_product_node_content
+        get_product_node_content=get_product_node_content,
+        compare_urls=True
     )

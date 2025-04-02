@@ -3,7 +3,6 @@ import uuid
 from processing.data.utils import uniq_filter_none
 from scraper.product.mapping import extract_product
 from bs4 import BeautifulSoup
-
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
@@ -15,12 +14,17 @@ async def attributes_combinations_product_scraper(url,
                                                   playwright_context,
                                                   product_size_group_keys,
                                                   get_initial_url,
-                                                  get_product_node_content):
+                                                  get_product_node_content,
+                                                  compare_urls=False):
     page = None
     run_id = uuid.uuid4()
     try:
         page = await playwright_context.new_page()
         await page.goto(url)
+        if compare_urls == True:
+            logger.info(f"attributes_combinations_product_scraper: requested_url: {url} current_url: {page.url}")
+            if not check_requested_url_and_redirected_url(url, page.url):
+                return None, 'OUT_OF_STOCK'
 
         attributes_combinations = await page.evaluate('() => window.attributesCombinations')
 
