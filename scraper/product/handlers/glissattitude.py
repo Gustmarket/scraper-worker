@@ -18,10 +18,11 @@ async def glissattitude(url, playwright_context):
         if len(size_option_selects) == 0 or size_option_selects is None:
             size_option_selects = await page.query_selector_all('li[data-attribute_name="Taille (cm)"] select')
 
+        raw_size_option_values = (await page.evaluate('(els) => els.map(el => [...el.options].map(o => o.value))', size_option_selects))
+        if len(raw_size_option_values) == 0:
+            return None, 'OUT_OF_STOCK'
         # Get the values of the options
-        size_option_values = \
-            (await page.evaluate('(els) => els.map(el => [...el.options].map(o => o.value))', size_option_selects))[0]
-
+        size_option_values = raw_size_option_values[0]
         product_variants = []
 
         for size_option_id in size_option_values:

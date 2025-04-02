@@ -212,7 +212,7 @@ async def local_test_async():
     try:
         async with async_playwright() as playwright:
             browser = await playwright.chromium.launch(headless=True)
-            for i in range(50):
+            for i in range(1):
                 try:
                     logger.info(f'local_test_async: ${i}')
                     if not browser.is_connected():
@@ -228,4 +228,4 @@ async def local_test_async():
 
 # schedule_crawlable_entity.delay()
 # process_out_of_stock_raw_items_task.delay()
-# local_test_task.delay()
+local_test_task.delay()
