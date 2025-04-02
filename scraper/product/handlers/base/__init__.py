@@ -86,3 +86,8 @@ async def attributes_combinations_product_scraper(url,
     finally:
         if page is not None:
             await page.close()
+
+def check_requested_url_and_redirected_url(requested_url, redirected_url):
+    normalized_requested_url = requested_url.replace('https://', '').replace('http://', '').replace('www.', '')
+    normalized_redirected_url = redirected_url.replace('https://', '').replace('http://', '').replace('www.', '')
+    return normalized_redirected_url.startswith(normalized_requested_url)

@@ -52,7 +52,7 @@ async def scrape_and_save_product(product_url, playwright_context):
 
     (product, product_type) = data
 
-    if product is None:
+    if product is None or product_type == 'OUT_OF_STOCK':
         result = {
             'type': "OUT_OF_STOCK"
         }
@@ -145,5 +145,5 @@ async def get_one_expired_product_url_and_update(playwright_context):
    
 async def get_one_expired_product_url_and_update_test(playwright_context):
    await get_one_expired_product_url_and_update_with_query(playwright_context, {
-        'hash': '79bbe6f9ae2add01562d58aff8118de7b5169b5e8f17eed93ff5232ff8b31dd3',
+        'hash': '4924e2f2011211cb8e2bf744fc91ee9d211315f8956905adc9f0a33f1344711d',
     })

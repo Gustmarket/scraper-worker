@@ -145,20 +145,23 @@ def scrape_trustpilot_stats_task():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(scrape_trustpilot_stats())
 
+def get_playwright_context(browser):
+    return browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
+
 async def schedule_crawlable_entity_async():
     # todo: count before starting
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(headless=True)
-        for i in range(1, 10):
+        for i in range(1, 20):
             logger.info(f'schedule_crawlable_entity_async: ${i}')
-            playwright_context = await browser.new_context()
+            playwright_context = await browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
             await get_one_expired_crawlable_entity_and_update(playwright_context)
 
 
 async def get_one_expired_product_url_and_update_with_browser(browser):
     playwright_context = None
     try:
-        playwright_context = await browser.new_context()
+        playwright_context = await browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
         await get_one_expired_product_url_and_update(playwright_context)
     except Exception as e:
         logger.exception(f'get_one_expired_product_url_and_update_with_browser_error: ${e}')
@@ -169,7 +172,20 @@ async def get_one_expired_product_url_and_update_with_browser(browser):
             except Exception as e:
                 # ignore
                 pass
-
+async def get_one_expired_product_url_and_update_test_with_browser(browser):
+    playwright_context = None
+    try:
+        playwright_context = await browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
+        await get_one_expired_product_url_and_update_test(playwright_context)
+    except Exception as e:
+        logger.exception(f'get_one_expired_product_url_and_update_with_browser_error: ${e}')
+    finally:
+        if playwright_context is not None:
+            try:
+                await playwright_context.close()
+            except Exception as e:
+                # ignore
+                pass
 async def schedule_url_batch_async():
     try:
         async with async_playwright() as playwright:
@@ -191,27 +207,22 @@ async def schedule_url_batch_async():
 
 async def local_test_async():
     # todo: count before starting
-    async with async_playwright() as playwright:
-        browser = await playwright.chromium.launch(headless=True)
-        playwright_context = await browser.new_context()
-        await get_one_expired_product_url_and_update_test(playwright_context)
+    try:
+        async with async_playwright() as playwright:
+            browser = await playwright.chromium.launch(headless=True)
+            for i in range(50):
+                try:
+                    logger.info(f'local_test_async: ${i}')
+                    if not browser.is_connected():
+                        logger.info("Browser was closed, launching new one...")
+                        browser = await playwright.chromium.launch(headless=True)
+                    await get_one_expired_product_url_and_update_test_with_browser(browser)
+                except Exception as e:
+                    logger.exception(f'local_test_async_error: ${e}')
+    except Exception as e:
+        logger.exception(f'local_test_async_wrapper_error: ${e}')
 
 
-# bootstrap_crawlable_entities_task.delay()
-
-# process_raw_items_task.delay()
-
-# upsert_product_offers_task.delay()
-
-# normalize_pre_processed_items_task.delay()
-
-# schedule_crawlable_entity.delay()
-
-# normalize_pre_processed_items_task.delay()
-
-# schedule_crawlable_entity.delay()
-
-# scrape_trustpilot_stats_task.delay()
-# schedule_url_batch.delay()
-
-# process_raw_items_task.delay()
+schedule_crawlable_entity.delay()
+# process_out_of_stock_raw_items_task.delay()
+# local_test_task.delay()

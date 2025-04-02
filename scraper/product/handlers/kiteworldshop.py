@@ -1,4 +1,3 @@
-import requests
 from bs4 import BeautifulSoup
 
 
@@ -6,7 +5,7 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 from scraper.product.mapping import extract_product
-
+from scraper.product.handlers.base import check_requested_url_and_redirected_url
 
 async def kiteworldshop(url, playwright_context):
     page = None
@@ -14,9 +13,11 @@ async def kiteworldshop(url, playwright_context):
         page = await playwright_context.new_page()
         await page.goto(url)
         logger.info(f"kiteworldshop: requested_url: {url} current_url: {page.url}")
+        if not check_requested_url_and_redirected_url(url, page.url):
+            return None, 'OUT_OF_STOCK'
 
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
+        html = await page.content()
+        soup = BeautifulSoup(html, 'html.parser')
 
         extracted = extract_product(soup, url)
         attributes_combinations = await page.evaluate('() => window.attributesCombinations')
