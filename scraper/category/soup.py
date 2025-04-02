@@ -20,6 +20,9 @@ def soup_category_scraper(source, link_selector, get_next_page_url):
 
         if len(links) == 0 and page == 0:
             raise Exception(f'no links found for {url}')
+        
+        if page > 50:
+            raise Exception(f'more than 50 pages have been found. there might be an error')
 
         urls = []
         for link in links:

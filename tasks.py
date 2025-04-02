@@ -226,6 +226,6 @@ async def local_test_async():
         logger.exception(f'local_test_async_wrapper_error: ${e}')
 
 
-# schedule_crawlable_entity.delay()
+schedule_crawlable_entity.delay()
 # process_out_of_stock_raw_items_task.delay()
 # local_test_task.delay()
