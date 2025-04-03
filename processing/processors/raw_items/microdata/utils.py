@@ -2,10 +2,11 @@ import re
 
 from processing.data.utils import flatten_list
 
-
 def cleanup_str(string_var):
     if string_var is None:
         return None
+    if not hasattr(string_var, 'strip'):
+        return string_var
     return re.sub("\n", "", string_var.strip())
 
 
