@@ -53,7 +53,7 @@ async def surfpirates(url, playwright_context):
                 variant_labels.append(variant_label)
 
                 logger.debug(f'clicking: {variant_label}')
-                if 'not available' in variant_label:
+                if 'not available' in variant_label or 'out of stock' in variant_label:
                     in_stock = False
                     break
                 await variant_selector_handle.click()
