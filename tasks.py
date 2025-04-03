@@ -146,13 +146,14 @@ def scrape_trustpilot_stats_task():
     loop.run_until_complete(scrape_trustpilot_stats())
 
 def get_playwright_context(browser):
-    return browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
+    return browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+                               locale="en-US")
 
 def execute_function_with_browser_factory(execute_function_fn):
     async def execute_function_with_browser(browser):
         playwright_context = None
         try:
-            playwright_context = await browser.new_context(user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36")
+            playwright_context = await get_playwright_context(browser)
             await execute_function_fn(playwright_context)
         except Exception as e:
             logger.exception(f'get_one_expired_product_url_and_update_with_browser_error: ${e}')

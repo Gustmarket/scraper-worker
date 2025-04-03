@@ -129,7 +129,6 @@ async def get_one_expired_product_url_and_update_with_query(playwright_context, 
 async def get_one_expired_product_url_and_update(playwright_context):
    await get_one_expired_product_url_and_update_with_query(playwright_context, {
         'out_of_stock': {'$ne': True},
-        'disabled': {'$ne': True},
         '$and': [
             {'$or': [
                 {'error_count': {'$lt': 5}, },
@@ -146,5 +145,6 @@ async def get_one_expired_product_url_and_update(playwright_context):
 async def get_one_expired_product_url_and_update_test(playwright_context):
    await get_one_expired_product_url_and_update_with_query(playwright_context, {
         # 'last_error': "could not load different url"
-         'hash': '789fd2f9ae7bb82da6fc65bbee398bdc3197430760301fc58d2a1e81cab6bc6b'  
+        # 'error_count': {'$gt': 0},
+         'hash': 'e001f93e70a2757c792fe8891af37b03b230d31efb47209a549d73b9d2b5ee05'  
     })

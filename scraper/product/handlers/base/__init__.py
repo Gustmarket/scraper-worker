@@ -31,7 +31,7 @@ async def attributes_combinations_product_scraper(url,
         initial_url = get_initial_url(url, attributes_combinations)
         if initial_url is None:
             logger.debug(f'{run_id} no initial url')
-            return
+            return None, 'OUT_OF_STOCK'
         sizes = [c for c in attributes_combinations if c['group'] in product_size_group_keys]
         variants = []
 

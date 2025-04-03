@@ -1,7 +1,10 @@
 from scraper.product.handlers.base import combination_to_url_hash_path, attributes_combinations_product_scraper
-
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 def get_initial_url(url, attributes_combinations):
+    if attributes_combinations is None:
+        return None
     kite_only_param = next((c for c in attributes_combinations if c['attribute'] == 'kite_only'), None)
     board_only = next((c for c in attributes_combinations if c['attribute'] in ['board_only_mit_finnen', 'board_only_mit_finnen_handle']), None)
     if board_only is not None:
