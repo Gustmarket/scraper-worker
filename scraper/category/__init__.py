@@ -26,7 +26,7 @@ def get_next_page_url_query_param(url, param_key='page'):
 
 
 def get_next_page_url_query_param_factory(param_key):
-    return lambda url, soup: get_next_page_url_query_param(url, param_key)
+    return lambda url: get_next_page_url_query_param(url, param_key)
 
 
 def no_next_page(url):
@@ -138,9 +138,10 @@ add_soup_next_page_selector_handler('magasin-glissevolution.com',
 add_soup_next_page_selector_handler('matos.be',
                                     '#products .products article .product-title a',
                                     '#infinity-url-next')
-add_soup_next_page_selector_handler('kiteworldshop.com',
+add_playwright_handler('kiteworldshop.com',
                                     '.product_list .product-container .product-name',
-                                    '.pagination_next a')
+                                    get_next_page_url_query_param_factory('p') 
+                                    ) #'.pagination_next a'
 
 add_soup_next_page_query_param_handler('kitemana.com',
                                        '.product__item a',

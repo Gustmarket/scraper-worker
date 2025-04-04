@@ -2,6 +2,7 @@ import asyncio
 
 from scraper.category.base import push_product_urls
 from celery.utils.log import get_task_logger
+from scraper.category.soup import get_links_with_soup
 logger = get_task_logger(__name__)
 
 
@@ -13,9 +14,8 @@ def playwright_category_scraper(source, link_selector, get_next_page_url, should
             await page.goto(url)
             await asyncio.sleep(2)
             # Find all elements matching the link selector and extract their href attributes
-            urls = await page.evaluate(
-                '(linkSelector) => Array.from(document.querySelectorAll(linkSelector)).map(el => el.href)',
-                link_selector)
+            urls = get_links_with_soup(await page.content(), link_selector, url)
+            logger.debug(f"found {len(urls)} links for {url} with selector {link_selector}")
 
             urls = list(set(urls))
             if len(urls) == 0 and page == 0:
