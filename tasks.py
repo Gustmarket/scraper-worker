@@ -170,7 +170,7 @@ async def schedule_crawlable_entity_async():
     try:
         async with async_playwright() as playwright:
             browser = await playwright.chromium.launch(headless=True)
-            for i in range(1, 20):
+            for i in range(20):
                 try:
                     logger.info(f'schedule_crawlable_entity_async: ${i}')
 
@@ -227,7 +227,8 @@ async def local_test_async():
         logger.exception(f'local_test_async_wrapper_error: ${e}')
 
 
-#schedule_crawlable_entity.delay()
+# process_raw_items_task.delay()
+# normalize_pre_processed_items_task.delay()
 # process_out_of_stock_raw_items_task.delay()
 # local_test_task.delay()
 # schedule_url_batch.delay()

@@ -1,6 +1,9 @@
 from processing.processors.raw_items.microdata.utils import better_map
 from processing.data.utils import flatten_list, uniq_filter_none
+import json
+from celery.utils.log import get_task_logger
 
+logger = get_task_logger(__name__)
 
 def _map_microdata_product(microdata_item, extra_data):
     if extra_data is None:
@@ -51,6 +54,7 @@ def _map_microdata_product(microdata_item, extra_data):
 
     return {
         "id": better_map(properties.get('productID')),
+        "description": better_map(properties.get('description')),
         "name": better_map([properties.get('name'), extra_data.get('name')]),
         "brand": better_map(properties.get('brand')),
         "images": better_map(properties.get('image')),
@@ -65,6 +69,9 @@ def _map_microdata_item_page(microdata_item, extra_data):
         extra_data = {}
     properties = microdata_item.get('properties')
     main_entity = properties.get('mainEntity')
+
+    if extra_data.get('name') is None:
+        extra_data['name'] = properties.get('name')
 
     return _map_microdata_product(main_entity, extra_data)
 

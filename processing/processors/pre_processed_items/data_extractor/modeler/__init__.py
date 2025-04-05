@@ -44,6 +44,9 @@ def extract_model(category, brand_slug, clean_name):
             "is_standardised": True
         }
 
-    logger.debug(f'{str(score)} - {found["name"]} for {clean_name} parsed {name_to_parse}')
+    if found is not None:
+        logger.debug(f'{str(score)} - {found.get("name", "unknown")} for {clean_name} parsed {name_to_parse}')
+    else:
+        logger.debug(f'{str(score)} - _BIG_ERROR_COULD_NOT_FIND_ANYTHING_ for {clean_name} parsed {name_to_parse}')
 
     return default_return_value
