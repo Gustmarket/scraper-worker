@@ -64,16 +64,20 @@ class NormalizedItem(BaseItem):
     category: str
     subcategories: [str]
     condition: str
+    description: str
+    html_description: str
     variants: [NormalizedItemVariant]
     images: [str]
     attributes: dict
 
-    def __init__(self, id, is_standardised, url, internal_sku, name, unique_model_identifier,raw_name,brand, brand_slug, condition, category, subcategories, variants, images, attributes):
+    def __init__(self, id, is_standardised, url, internal_sku, name, description, html_description, unique_model_identifier,raw_name,brand, brand_slug, condition, category, subcategories, variants, images, attributes):
         self.id = id
         self.is_standardised = is_standardised
         self.url = url
         self.internal_sku = internal_sku
         self.name = name
+        self.description = description
+        self.html_description = html_description
         self.unique_model_identifier = unique_model_identifier
         self.raw_name = raw_name
         self.brand = brand
@@ -104,6 +108,8 @@ class NormalizedItem(BaseItem):
             "url": self.url,
             "internal_sku": self.internal_sku,
             "name": self.name,
+            "description": self.description,
+            "html_description": self.html_description,
             "unique_model_identifier": self.unique_model_identifier,
             "raw_name": self.raw_name,
             "brand": self.brand,
@@ -124,6 +130,8 @@ class NormalizedItem(BaseItem):
             url=json['url'],
             internal_sku=json['internal_sku'],
             name=json['name'],
+            description=json.get('description'),
+            html_description=json.get('html_description'),
             unique_model_identifier=json.get('unique_model_identifier'),
             raw_name=json.get('raw_name'),
             brand=json['brand'],

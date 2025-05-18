@@ -74,6 +74,8 @@ def from_raw_item_shopify(crawled_item):
         name=title_,
         name_variants=[title_],
         url=crawled_item['url'],
+        description=crawled_item.get('description'),
+        html_description=crawled_item.get('html_description'),
         brand=crawled_item.get('vendor'),
         variants=variants,
         images=images,

@@ -70,8 +70,10 @@ class PreProcessedItem(BaseItem):
     condition: str
     variants: [PreProcessedItemVariant]
     images: [str]
+    description: str
+    html_description: str
 
-    def __init__(self, id, name, name_variants, url, brand, category, subcategories, condition, variants, images):
+    def __init__(self, id, name, name_variants, description, html_description, url, brand, category, subcategories, condition, variants, images):
         self.id = id
         self.name = name
         self.name_variants = name_variants
@@ -82,6 +84,8 @@ class PreProcessedItem(BaseItem):
         self.condition = condition
         self.variants = variants
         self.images = images
+        self.description = description
+        self.html_description = html_description
 
     def __str__(self):
         return f"PreProcessedItem({self.id}, {self.name}, {self.brand}, {self.category}, {self.subcategories}, {self.condition}, {self.variants}, {self.images})"
@@ -143,6 +147,8 @@ class PreProcessedItem(BaseItem):
             "condition": self.condition,
             "variants": list(map(lambda v: v.to_json(), self.variants)),
             "images": self.images,
+            "description": self.description,
+            "html_description": self.html_description,
         }
 
     @staticmethod
@@ -158,6 +164,8 @@ class PreProcessedItem(BaseItem):
             subcategories=json.get('subcategories'),
             variants=list(map(PreProcessedItemVariant.from_json, json['variants'])),
             images=json.get('images'),
+            description=json.get('description'),
+            html_description=json.get('html_description'),
         )
 
 

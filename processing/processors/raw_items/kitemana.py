@@ -129,6 +129,8 @@ def from_raw_item_kitemana(crawled_item):
         name_variants=[crawled_item['name']],
         url=crawled_item['url'],
         brand=crawled_item['brand'],
+        description=crawled_item.get('description'),
+        html_description=crawled_item.get('html_description'),
         variants=variants,
         images=images,
         category=category,

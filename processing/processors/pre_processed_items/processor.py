@@ -97,6 +97,8 @@ def normalize_pre_processed_product(item: PreProcessedItem, parentAttributes):
         brand=brand_name,
         brand_slug=brand_slug,
         category=category,
+        description=item.description,
+        html_description=item.html_description,
         subcategories=[subcategory] if subcategory else [],
         condition=condition,
         images=item.images,
