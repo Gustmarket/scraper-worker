@@ -8,20 +8,16 @@ from scraper.category.base import push_product_urls
 from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
-def get_links_with_soup(html_content, link_selector, base_url):
-    soup = BeautifulSoup(html_content, 'html.parser')
-
+def get_links_with_soup(soup, link_selector, base_url):
     links = soup.select(link_selector)
     if len(links) == 0:
         return []
-
     urls = []
     for link in links:
         link_href = link.get('href')
         link_url = link_href if base_url is None else urljoin(base_url, link_href)
         if link_url.startswith(('http://', 'https://')):
             urls.append(link_url)
-
     return list(set(urls))
 
 def soup_category_scraper(source, link_selector, get_next_page_url):
@@ -29,7 +25,7 @@ def soup_category_scraper(source, link_selector, get_next_page_url):
         # todo: add playwrigth/seleium get html and then use soup for the selectors #crazy
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
-
+        
         urls = get_links_with_soup(soup, link_selector, url)
         logger.debug(f"found {len(urls)} links for {url} with selector {link_selector}")
 

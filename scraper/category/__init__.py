@@ -26,7 +26,7 @@ def get_next_page_url_query_param(url, param_key='page'):
 
 
 def get_next_page_url_query_param_factory(param_key):
-    return lambda url: get_next_page_url_query_param(url, param_key)
+    return lambda url, soup: get_next_page_url_query_param(url, param_key)
 
 
 def no_next_page(url):
@@ -147,7 +147,7 @@ add_soup_next_page_query_param_handler('kitemana.com',
                                        '.product__item a',
                                        'pg')
 add_soup_next_page_query_param_handler('you-love-it.eu',
-                                       '.product-slider-item .product-info .product-name',
+                                       '.cms-block-product-listing .product-box .product-name',
                                        'p')
 add_soup_next_page_query_param_handler('zephcontrol.com',
                                        '.catalog__content .product-grid .product .product-link',
