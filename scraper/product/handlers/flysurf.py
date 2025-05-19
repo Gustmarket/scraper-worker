@@ -26,36 +26,44 @@ async def flysurf(url, playwright_context):
         variant_selector_labels = [(await label.inner_text()).strip() for label in await page.query_selector_all('.ng--product--variants--item:not(.ng--product--variants--item--disabled) label')]
         logger.debug(f"flysurf variant_selector_labels: {variant_selector_labels}")
         variants = []
+        
         for variant_selector_label in variant_selector_labels:
-            variant_selectors = await page.query_selector_all('.ng--product--variants--item:not(.ng--product--variants--item--disabled)')
-            variant_selector = None
-            for selector in variant_selectors:
-                label = await selector.query_selector('label')
-                if label:
-                    text = (await label.inner_text()).strip()
-                    if text == variant_selector_label:
-                        variant_selector = selector
-                        break
-            if not variant_selector:
-                logger.warning(f"Could not find variant selector for label: {variant_selector_label}")
-                continue
-            logger.debug(f"flysurf variant_selector: clicking variant")
-            await (await variant_selector.query_selector('label')).click()
+            # Re-query selectors for each iteration
+            await page.wait_for_selector('.ng--product--variants--item:not(.ng--product--variants--item--disabled)')
+            
+            # Click the variant using label text directly
+            await page.evaluate('''(label) => {
+                const selectors = document.querySelectorAll('.ng--product--variants--item:not(.ng--product--variants--item--disabled) label');
+                for (const selector of selectors) {
+                    if (selector.innerText.trim() === label) {
+                        selector.click();
+                        return;
+                    }
+                }
+            }''', variant_selector_label)
+            
             logger.debug(f"flysurf variant_selector: clicked")
 
-            # todo: await price change or smth
-            await asyncio.sleep(1)
-            logger.debug(f"flysurf variant_selector: getting size")
-            variant_input = await variant_selector.query_selector('input')
-            logger.debug(f"flysurf variant_selector: getting size 2")
-            size = await variant_input.get_attribute('title')
-            logger.debug(f"flysurf variant_selector: getting price")
-            price = await (await page.query_selector('#hiddenPriceForAlma')).text_content()
+            # Wait for any updates to complete
+            await page.wait_for_timeout(1000)  # 1 second wait
+
+            # Get size and price
+            size = await page.evaluate('''(label) => {
+                const selector = document.querySelector(`.ng--product--variants--item:not(.ng--product--variants--item--disabled) input[title="${label}"]`);
+                return selector ? selector.getAttribute('title') : null;
+            }''', variant_selector_label)
+            
+            price = await page.evaluate('''() => {
+                const priceElement = document.querySelector('#hiddenPriceForAlma');
+                return priceElement ? priceElement.textContent : null;
+            }''')
+            
             logger.debug(f'flysurf data: {size} {price}')
-            variants.append({
-                'size': size,
-                'price': price
-            })
+            if size and price:
+                variants.append({
+                    'size': size,
+                    'price': price
+                })
 
         return {
             **base,
