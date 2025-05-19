@@ -146,5 +146,5 @@ async def get_one_expired_product_url_and_update_test(playwright_context):
    await get_one_expired_product_url_and_update_with_query(playwright_context, {
         # 'last_error': "could not load different url"
         # 'error_count': {'$gt': 0},
-         'hash': 'e001f93e70a2757c792fe8891af37b03b230d31efb47209a549d73b9d2b5ee05'  
+         'hash': '8c8e4a87c12a9e64bbe7f6c5b6adecf86f77f7f7eebbe95c12457f658101bc97'  
     })

@@ -11,23 +11,48 @@ async def flysurf(url, playwright_context):
     try:
         page = await playwright_context.new_page()
         await page.goto(url)
+        
+        # Handle cookie consent modal first
+        try:
+            # coockie_handler_button = await page.wait_for_selector('button.cookiesplus-reject')
+            coockie_handler_button = await page.wait_for_selector('button.cookiesplus-accept')
+            await coockie_handler_button.click()
+            # Wait for modal to disappear
+            await page.wait_for_selector('#cookiesplus-modal-container', state='hidden')
+        except Exception as e:
+            logger.warning(f"Cookie consent handling failed: {e}")
+        
         base = extract_product(await page.content(), url)
-        variant_selectors = await page.query_selector_all('.dp-product-size .dp-checklist li label')
+        variant_selector_labels = [(await label.inner_text()).strip() for label in await page.query_selector_all('.ng--product--variants--item:not(.ng--product--variants--item--disabled) label')]
+        logger.debug(f"flysurf variant_selector_labels: {variant_selector_labels}")
         variants = []
-        for variant_selector in variant_selectors:
-            await variant_selector.click()
+        for variant_selector_label in variant_selector_labels:
+            variant_selectors = await page.query_selector_all('.ng--product--variants--item:not(.ng--product--variants--item--disabled)')
+            variant_selector = None
+            for selector in variant_selectors:
+                label = await selector.query_selector('label')
+                if label:
+                    text = (await label.inner_text()).strip()
+                    if text == variant_selector_label:
+                        variant_selector = selector
+                        break
+            if not variant_selector:
+                logger.warning(f"Could not find variant selector for label: {variant_selector_label}")
+                continue
+            logger.debug(f"flysurf variant_selector: clicking variant")
+            await (await variant_selector.query_selector('label')).click()
+            logger.debug(f"flysurf variant_selector: clicked")
 
             # todo: await price change or smth
             await asyncio.sleep(1)
-
+            logger.debug(f"flysurf variant_selector: getting size")
             variant_input = await variant_selector.query_selector('input')
+            logger.debug(f"flysurf variant_selector: getting size 2")
             size = await variant_input.get_attribute('title')
-            price = await (await page.query_selector('.dp-product-price .priceWithDiscount')).text_content()
-            input_class = await variant_input.get_attribute('class')
-            in_stock = input_class is None or 'disabled' not in input_class
-            logger.debug(f'flysurf data: {in_stock} {size} {price}')
+            logger.debug(f"flysurf variant_selector: getting price")
+            price = await (await page.query_selector('#hiddenPriceForAlma')).text_content()
+            logger.debug(f'flysurf data: {size} {price}')
             variants.append({
-                'in_stock': in_stock,
                 'size': size,
                 'price': price
             })

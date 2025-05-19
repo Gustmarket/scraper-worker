@@ -230,6 +230,5 @@ async def local_test_async():
 # process_raw_items_task.delay()
 # normalize_pre_processed_items_task.delay()
 # process_out_of_stock_raw_items_task.delay()
-# local_test_task.delay()
+local_test_task.delay()
 # schedule_url_batch.delay()
-# process_raw_items_task.delay()
